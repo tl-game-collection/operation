@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">玩家ID</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="uid" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    
+                     
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 增加 </button>
+				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="reduce"> 减少 </button>
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="setqx"> 设置权限 </button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+    </div>
+</div>
+
+<!--增加  -->
+
+
+<div class="layuimini-container layui-hide" id="add">
+<div class="layuimini-main">
+<div class="layui-form layuimini-form" lay-filter="addPage">
+	
+    <div class="layui-form-item">
+        <label class="layui-form-label required">玩家ID</label>
+        <div class="layui-input-block">
+            <input type="text" name="uid" id="uid" readonly="readonly"    value="" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">玩家昵称</label>
+        <div class="layui-input-block">
+            <input type="number" name="name" readonly="readonly"   placeholder="请输入手机" value="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">房卡数</label>
+        <div class="layui-input-block">
+            <input type="email" name="money" readonly="readonly"  value="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+     <label class="layui-form-label">设置房卡数</label>
+        <div class="layui-input-block">
+            <input type="text" name="opmoney" placeholder="请输入房卡数" lay-verify="number" value="" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+
+ 
+<div class="layuimini-container layui-hide" id="setqx" >
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form" lay-filter="setqx">
+
+			 <div class="layui-form-item layui-hide" >
+     <label class="layui-form-label">设置房卡数</label>
+        <div class="layui-input-block">
+            <input type="text" name="uid" placeholder="请输入房卡数" lay-verify="number" value="" class="layui-input">
+        </div>
+    </div>
+    
+
+            
+			<div class="layui-form-item">
+			    <label class="layui-form-label">群数量</label>
+			    <div class="layui-input-block">
+			      <select name="GROUP_NUM" lay-verify="">
+					  <option value="16">0</option> 2 4
+					  <option value="32">3</option>
+					  <option value="48">5</option>
+					  <option value="64">10</option>
+					  <option value="80">20</option>
+					  <option value="96">50</option>
+					  <option value="112">100</option>
+					  <option value="128">500</option>
+					  <option value="144">99999</option>
+
+				</select> 
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label">群成员个数</label>
+			    <div class="layui-input-block">
+			      <select name="GROUP_MEMBER_NUM" lay-verify="">
+					  <option value="256">1</option>
+					  <option value="512">50</option>
+					  <option value="768">100</option>
+					  <option value="1024">200</option>
+					  <option value="1280">500</option>
+					  <option value="1536">1000</option>
+					  <option value="1792">5000</option>
+					  <option value="2048">10000</option>
+					  <option value="2304">999999</option>
+			
+				</select> 
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label">单群玩法桌个数</label>
+			    <div class="layui-input-block">
+			      <select name="ARENA_NUM" lay-verify="">
+					  <option value="4096">0</option>
+					  <option value="8192">3</option>
+					  <option value="12288">5</option>
+					  <option value="16384">10</option>
+					  <option value="20480">20</option>
+					  <option value="24576">50</option>
+					  <option value="28672">100</option>
+					  <option value="32768">500</option>
+					  <option value="36864">99999</option>
+			
+				</select> 
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+
+			    <label class="layui-form-label">搜索好友次数</label>
+			    <div class="layui-input-block">
+			      <select name="SEARCH_PLAYER" lay-verify="">
+					  <option value="65536">5</option>
+					  <option value="131072">10</option>
+					  <option value="196608">20</option>
+					  <option value="262144">50</option>
+					  <option value="327680">100</option>
+					  <option value="393216">200</option>
+					  <option value="458752">500</option>
+					  <option value="524288">1000</option>
+					  <option value="589824">99999</option>
+			
+				</select> 
+			    </div>
+			</div>
+			<div class="layui-form-item">
+			    <div class="layui-input-block">
+			        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="setting">确认修改</button>
+			    </div>
+			</div>
+	
+        </div>
+    </div>
+</div>
+
+
+<script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+		debugger;
+        table.render({
+            elem: '#currentTableId',
+            url: '/api/getPlayer',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            request: {
+                pageName: 'pageNum' //页码的参数名称，默认：page
+                ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+              },
+              
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'uid', width: 150, title: '玩家ID', sort: true},
+                {field: 'name', width: 150, title: '玩家昵称'},
+                {field: 'money', width: 150, title: '操作前房卡数', templet: '#titleTpl', sort: true},
+                {field: 'city', width: 150, title: '操作类型'},
+                {field: 'sign', title: '操作员ID'},
+                {field: 'experience', width: 150, title: '操作员昵称', sort: true},
+                {field: 'score', width: 150, title: '操作时间', sort: true},
+              
+            ]],
+            response:{
+            		    statusCode: 200
+            },
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+        
+   
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where:data.field
+            }, 'data');
+
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+         var opertion=true;
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+            	var checkStatus = table.checkStatus('currentTableId');
+            	if(checkStatus.data.length!=1){
+            	
+            		layer.alert(
+                       	"请选中一个个玩家"
+                    );
+            		return;
+            	}
+            	var rowData=checkStatus.data[0];
+            	
+                var index = layer.open({
+                    title: '增加房卡',
+                    type: 1,
+                    shade: 0.2,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: $('#add') ,
+                    success: function(layero, index){
+                    	form.val("addPage",rowData
+                    		 );
+                    	$("#add").removeClass("layui-hide");
+                    	opertion=true;
+                        console.log(layero, index);
+                      }
+                    
+                });
+                $(window).on("resize", function () {
+                    //layer.full(index);
+                });
+            } else if(obj.event === 'reduce'){
+            	var checkStatus = table.checkStatus('currentTableId');
+            	if(checkStatus.data.length!=1){
+            	
+            		layer.alert(
+                       	"请选中一个个玩家"
+                    );
+            		return;
+            	}
+            	var rowData=checkStatus.data[0];
+				var index = layer.open({
+				    title: '减少房卡',
+				    type: 1,
+				    shade: 0.2,
+				    area: ['100%', '100%'],
+				    shadeClose: true,
+				    content:$('#add'),
+				    success: function(layero, index){
+                    	form.val("addPage",rowData
+                    		 );
+                    	opertion=false;
+                    	$("#add").removeClass("layui-hide");
+                        console.log(layero, index);
+                      }
+				});
+				$(window).on("resize", function () {
+				    layer.full(index);
+				});
+				
+				
+			}else if(obj.event ==='setqx'){
+				var checkStatus = table.checkStatus('currentTableId');
+            	if(checkStatus.data.length!=1){
+            	
+            		layer.alert(
+                       	"请选中一个个玩家"
+                    );
+            		return;
+            	}
+            	var rowData=checkStatus.data[0];
+				var index = layer.open({
+				    title: '设置权限',
+				    type: 1,
+				    shade: 0.2,
+				     area: ['100%', '100%'],
+				    shadeClose: true,
+				    content:$('#setqx'),
+				    success: function(layero, index){
+                    	form.val("setqx",rowData
+                    		 );
+                    	opertion=false;
+                    	$("#setqx").removeClass("layui-hide");
+                       
+                      }
+				});
+				$(window).on("resize", function () {
+					 layer.full(index);
+				});
+				
+			}
+			
+			
+			else if (obj.event === 'delete') {  // 监听删除操作
+                var checkStatus = table.checkStatus('currentTableId')
+                    , data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+
+                var index = layer.open({
+                    title: '编辑用户',
+                    type: 2,
+                    shade: 0.2,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '../page/table/edit.html',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delete') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            }
+        });
+        
+        
+  
+        
+    
+        
+      	function getMoney(key,opMoney){
+              result="{\""+key+"\""+":"+opMoney+"}";
+              return result;
+             // alert(result);
+      	}
+        
+      	
+        
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+          
+               
+       
+                var req=data.field;
+               
+                if(!opertion){
+                	req.opmoney=-req.opmoney
+                }
+                	
+         
+              //alert(req.opMoney);
+            	  $.ajax({
+                      type:"POST",
+                      url:"/api/updatePlayer",
+                      data:{"uid":req.uid,"amount":req.opmoney},
+                      success:function(req){
+                    	  
+                       
+                      },
+                      error:function(jqXHR){
+                          console.log("Error: "+jqXHR.status);
+                      }
+                  });
+            	  
+            	  setTimeout(function(){
+            		  layer.msg('操作成功', {
+    					  icon: 1,
+    					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+    					}, function(){
+    						table.reload('currentTableId', {
+    			                page: {
+    			                    curr: 1
+    			                }
+    			                
+    			            }, 'data');
+    					      
+
+    					});
+            	  }, 500)
+            	   layer.closeAll(); 
+            	  
+            	 
+            	
+
+                // 关闭弹出层
+                
+               
+          
+    
+                return false;
+        });
+        
+        
+        form.on('submit(setting)', function (data) {
+      
+            var req=JSON.stringify(data.field);
+            var req=data.field;
+            var fridendNum=9;//最大好友数量：999999
+            var level= 9| req.GROUP_NUM | req.GROUP_MEMBER_NUM |  req.ARENA_NUM | req.SEARCH_PLAYER;
+            
+           
+			$.ajax({
+			    type:"POST",
+			    url:"/api/updateUserPrivilege",
+			    data:{"uid":req.uid,"level":level},
+		
+			    success:function(req){
+				 
+					
+					setTimeout(function(){
+	            		  layer.msg('操作成功', {
+	    					  icon: 1,
+	    					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+	    					}, function(){
+	    						table.reload('currentTableId', {
+	    			                page: {
+	    			                    curr: 1
+	    			                }
+	    			                
+	    			            }, 'data');
+	    					      
+
+	    					});
+	            	  }, 500)
+			    },
+			    error:function(jqXHR){
+			        console.log("Error: "+jqXHR.status);
+			    }
+			});
+			
+			   layer.closeAll(); 
+			
+            return false;
+        });
+
+
+        form.verify({
+            opmoney: function(value, item){ //value：表单的值、item：表单的DOM对象
+             
+             if(value<0){
+                 layer.msg("房卡数必须大于零");
+                 return ;
+             }
+            }
+            
+         
+        });      
+
+
+    });
+</script>
+
+<script type="text/html" id="titleTpl">
+  {{JSON.parse(d.money).DIAMOND}}
+</script>
+
+</body>
+</html>

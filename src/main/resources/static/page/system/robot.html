@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>系统设置</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+    <style>
+        .layui-form-item .layui-input-company {width: auto;padding-right: 10px;line-height: 38px;}
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form">
+        
+        
+        
+        	<div class="layui-form-item">
+			    <label class="layui-form-label required">玩家ID</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="playerUid"    class="layui-input">
+			    </div>
+			</div>
+ 
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">圈ID</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="clubUid"    class="layui-input">
+			    </div>
+			</div>
+			
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">楼层</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="floorUid" lay-verify="number"  class="layui-input">
+			    </div>
+			</div>
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">类型</label>
+			    <div class="layui-input-block">
+			        <select name="type">
+                        <option value=""></option>
+                        <option value="1" selected="">2人场</option>
+                        <option value="2">3人场</option>
+                        <option value="3">4人场</option>
+                    </select>
+			    </div>
+			    
+			    
+			    
+			</div>
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">最小桌子数</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="robotDeskMin" lay-verify="number"     class="layui-input">
+			    </div>
+			</div>
+			
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">最大桌子数</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="robotDeskMax" lay-verify="number"     class="layui-input">
+			    </div>
+			</div>
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">随机时间</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="randomTime" lay-verify="number"     class="layui-input">
+			    </div>
+			</div>
+			
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="setting">确认解散</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form
+            , layer = layui.layer
+        	,$ = layui.jquery
+
+        //监听提交
+        form.on('submit(setting)', function (data) {
+        	
+        	
+        	layer.confirm('您正在执行房间解散操作 ，确定要解散当前房间吗?', function(index){
+        		
+        	   var req=JSON.stringify(data.field);
+      			$.ajax({
+      			    type:"POST",
+      			    url:"/api/addClubGameDesk",
+      			    data:req,
+      			    contentType:'application/json;charset=UTF-8',
+      			    success:function(req){
+      					 layer.msg(JSON.parse(req).msg, {
+       					  icon: 1,
+       					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+       					})
+               	  
+      					
+      					
+      			    },
+      			    error:function(jqXHR){
+      			        console.log("Error: "+jqXHR.status);
+      			    }
+      			});
+        		 
+        		  
+        		  layer.close(index);
+        		});      
+   
+          
+			
+            return false;
+        });
+        form.verify({
+          roomUid:function(value,item){
+        	  if(value.length>11){
+        		  return '请输入正确的房间id，不能太长'
+        	  }
+        	  
+        	
+        	  
+          }
+          
+        });
+        
+        
+        
+        
+
+    });
+</script>
+</body>
+</html>

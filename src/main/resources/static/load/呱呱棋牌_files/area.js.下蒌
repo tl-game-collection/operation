@@ -1,0 +1,47 @@
+var areaInfo = {
+	'hubei': {
+		'url': ['download.juhuiguoji.cn'],
+		'compName': 'KOS, OOO',
+		'appName': '大唐卡五星',
+		'cert': 'hubei.mobileprovision'
+	}
+}
+
+var areas = _.pairs(areaInfo);
+
+var curr = window.location.href;
+var app = _.find(areas, function (a) {
+	return _.find(a[1]['url'], function (us) {
+		return curr.indexOf(us) >= 0;
+	});
+})[0];
+var areaConf = areaInfo[app];
+
+var qiyeName = areaConf['compName'];
+var appName = areaConf['appName'];
+var cert = areaConf['cert'];
+
+
+
+function showIOSTips () {
+	if(is_weixin()) {
+		return ;
+	}
+	if(! app) return ;
+	$('.weixin-app-download-mask').show();
+	$(".install-tip-mask").show();
+	$(".install-tip").animate({bottom: "0"});
+
+	$('#appName').html(appName);
+	$('#qiyeName').html(qiyeName);
+	$('#jiaochengLianjie').attr('href','static/qiye/jiaocheng/jiaocheng.html?qiyeName=' + qiyeName + "&appName=" + appName + "&appIcon=" + app);
+	$('#zhengshuLianjie').attr('href', 'static/qiye/cert/'+cert);
+	$('.first-step-image').css('background-image','url(static/qiye/bar/' + app + '.jpg)');
+}
+
+$(function () {
+	$('.btn-close').click(function () {
+		$(".install-tip-mask").hide();
+		$(".install-tip").animate({bottom: "-1000px"});
+	});
+});

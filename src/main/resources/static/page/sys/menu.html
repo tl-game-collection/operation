@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>menu</title>
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+    
+  <link rel="stylesheet" href="../../js/lay-module/dtree/dtree.css">
+  <link rel="stylesheet" href="../../js/lay-module/dtree/font/dtreefont.css">
+  <link rel="stylesheet" href="../../lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+    <style>
+        .layui-btn:not(.layui-btn-lg ):not(.layui-btn-sm):not(.layui-btn-xs) {
+            height: 34px;
+            line-height: 34px;
+            padding: 0 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <blockquote class="layui-elem-quote">
+        	  <div class="layui-btn-group">
+                <button class="layui-btn" id="btn-expand">全部展开</button>
+                <button class="layui-btn layui-btn-normal" id="btn-fold">全部折叠</button>
+                <button class="layui-btn layui-btn-normal" id="btn-add">新增</button>
+                <button class="layui-btn layui-btn-normal" id="btn-serach">刷新</button>
+            </div>
+           
+        </blockquote>
+            <table id="munu-table" class="layui-table" lay-filter="munu-table"></table>
+        </div>
+</div>
+
+
+
+
+
+<div class="layuimini-container layui-hide" id="add" >
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form" lay-filter="addPage" id="addPage">
+
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">父菜单</label>
+			    <div class="layui-input-block">
+			        <input type="text"  id="parent_name" readonly="readonly"  class="layui-input">
+			    </div>
+			</div>
+		
+			<div class="layui-form-item layui-hide">
+			    <label class="layui-form-label required">parent_id</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="parent_id" id="parent_id" readonly="readonly"  value="-1"  class="layui-input">
+			    </div>
+			</div>
+			
+			
+			<div class="layui-form-item layui-hide">
+			    <label class="layui-form-label required">id</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="id"  class="layui-input">
+			    </div>
+			</div>
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">菜单名称</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="name"  class="layui-input">
+			    </div>
+			</div>
+			
+			
+		<div class="layui-form-item">
+                <label class="layui-form-label">菜单类型</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="isMenu" value="0" title="目录" checked="">
+                    <input type="radio" name="isMenu" value="1" title="菜单">
+                    <input type="radio" name="isMenu" value="2" title="按钮">
+                </div>
+            </div>
+			
+	
+            <div class="layui-form-item">
+                <label for="" class="layui-form-label">图标</label>
+                <div class="layui-input-block">
+                    <input type="text" id="iconPicker" name="menuIcon"   lay-filter="iconPicker" class="hide">
+                </div>
+            </div>
+
+          <!--   <div class="layui-form-item">
+                <label for="" class="layui-form-label">自定义图标</label>
+                <div class="layui-input-block">
+                    <input type="text" id="iconPicker1" value="fa-arrows" lay-filter="iconPicker2" class="hide">
+                </div>
+            </div> -->
+     
+			
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">菜单链接</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="url"  class="layui-input">
+			    </div>
+			</div>
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">权限标识</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="permission"  class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">排序</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="orderNumber"  class="layui-input">
+			    </div>
+			</div>
+			
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div style="height: 350px;overflow: auto;" id="toolbarDiv" class="layui-hide">
+	 <ul id="demoTree" class="dtree" data-id="0"></ul>
+</div>
+
+
+
+<!-- 操作列 -->
+<script type="text/html" id="auth-state">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
+    layui.use(['table', 'treetable','dtree','iconPickerFa','form'], function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+        var treetable = layui.treetable;
+        var dtree=layui.dtree;
+        var iconPickerFa = layui.iconPickerFa;
+        var form=layui.form;
+        
+        
+        var dtree = layui.dtree, layer = layui.layer, $ = layui.jquery;
+        
+        
+        iconPickerFa.render({
+            // 选择器，推荐使用input
+            elem: '#iconPicker',
+            // fa 图标接口
+            url: "../../lib/font-awesome-4.7.0/less/variables.less",
+            // 是否开启搜索：true/false，默认true
+            search: true,
+            // 是否开启分页：true/false，默认true
+            page: true,
+            // 每页显示数量，默认12
+            limit: 20,
+            // 点击回调
+            click: function (data) {
+            	
+            	$('#iconPicker').val('fa '+data.icon);
+            },
+            // 渲染成功后的回调
+            success: function (d) {
+            }
+        });
+
+        iconPickerFa.render({
+            // 选择器，推荐使用input
+            elem: '#iconPicker1',
+            // fa 图标接口
+            url: "../../lib/font-awesome-4.7.0/less/variables.less",
+            // 是否开启搜索：true/false
+            search: true,
+            // 是否开启分页
+            page: true,
+            // 每页显示数量，默认12
+            limit: 12,
+            // 点击回调
+            click: function (data) {
+                console.log(data);
+            },
+            // 渲染成功后的回调
+            success: function (d) {
+                console.log(d);
+            }
+        });
+        
+        
+        
+     
+        
+      
+        demoTree= 
+   
+        	[
+        	  {"id":"001","title": "湖南省","checkArr": "0","parentId": "0"},
+        	  {"id":"002","title": "湖北省","checkArr": "0","parentId": "0"},
+        	  {"id":"003","title": "广东省","checkArr": "0","parentId": "0"},
+        	  {"id":"004","title": "浙江省","checkArr": "0","parentId": "0"},
+        	  {"id":"005","title": "福建省","checkArr": "0","parentId": "0"},
+        	  {"id":"001001","title": "长沙市","checkArr": "0","parentId": "001"},
+        	  {"id":"001002","title": "株洲市","checkArr": "0","parentId": "001"},
+        	  {"id":"001003","title": "湘潭市","checkArr": "0","parentId": "001"},
+        	  {"id":"001004","title": "衡阳市","checkArr": "0","parentId": "001"},
+        	  {"id":"001005","title": "郴州市","checkArr": "0","iconClass": "dtree-icon-caidan_xunzhang","parentId": "001"}
+        	];
+
+      
+        
+        // 初始化树
+        var DemoTree = dtree.render({
+          elem: "#demoTree",
+          data: demoTree, // 使用data加载
+          dataFormat: "list",
+          checkbar: true,  
+          //skin: "laySimple"
+          //ficon: "-1",  // 隐藏一级图标 
+   /*        
+          skin:{
+        	  line: false, // 无树线
+        	  ficon: ["1","-1"],  // 设定一级图标样式。1表示三角形图标，-1表示不设置叶子节点图标
+        	  icon: "-1" // 不设定二级图标样式。
+        	 }
+         */
+         // url: "../../api/upload2.json" // 使用url加载（可与data加载同时存在）
+        });
+        
+        // 绑定节点点击
+        dtree.on("node('demoTree')" ,function(obj){
+          layer.msg(JSON.stringify(obj.param));
+        });
+    
+        
+        
+
+        // 渲染表格
+        layer.load(2);
+        var renderTable= function(){
+        	 treetable.render({
+                 treeColIndex: 1,
+                 treeSpid: 0,
+                 treeIdName: 'id',
+                 treePidName: 'parent_id',
+                 elem: '#munu-table',
+                 url: '/api/getPermissions',
+                 page: false,
+                 cols: [[
+                     {type: 'numbers'},
+                     {field: 'name', minWidth: 200, title: '菜单名称'},
+                     {field: 'menuIcon', title: '菜单图标',
+                    	 templet: function (d){
+                    	    return '<i class="'+d.menuIcon+'"></i>'
+                         }
+                     },
+                     
+                     {field: 'permission', title: '权限标识'},
+                     {field: 'url', title: '菜单url'},
+                     {field: 'orderNumber', width: 80, align: 'center', title: '排序号'},
+                     {
+                         field: 'isMenu', width: 80, align: 'center', templet: function (d) {
+                             if (d.isMenu == 2) {
+                                 return '<span class="layui-badge layui-bg-gray">按钮</span>';
+                             }
+                             if (d.parent_id == 0) {
+                                 return '<span class="layui-badge layui-bg-blue">目录</span>';
+                             } else {
+                                 return '<span class="layui-badge-rim">菜单</span>';
+                             }
+                         }, title: '类型'
+                     },
+                     {templet: '#auth-state', width: 120, align: 'center', title: '操作'}
+                 ]],
+                 done: function () {
+                     layer.closeAll('loading');
+                 }
+             });
+        	
+        } 
+        
+        renderTable();
+
+        $('#btn-expand').click(function () {
+            treetable.expandAll('#munu-table');
+        });
+
+        $('#btn-fold').click(function () {
+            treetable.foldAll('#munu-table');
+        });
+        
+        
+        $('#parent_name').click(function () {
+          var index=layer.open({
+     		    type: 1,  //type:0 也行
+     		    title: "选择树",
+     		    area: ["400px", "80%"],
+     		    content: '<ul id="openTree1" class="dtree" data-id="0"></ul>',
+     		    btn: ['确认选择'],
+     		    success: function(layero, index){
+     		      var DTree = dtree.render({
+     		      //  obj: $(layero).find("#openTree1"),    如果直接用elem加载不出来，则可以使用这个方式加载jquery的DOM
+     		        elem: "#openTree1",
+     		        url: "/api/getMenuTree",
+     		       // data:demoTree,
+     		        dataFormat: "list",
+     		        //dataStyle: "layuiStyle",
+     		        checkbar: true,  
+     		        skin: "laySimple",
+     		        
+     		          error: function(XMLHttpRequest, textStatus, errorThrown){  //异步加载异常时回调
+     		        	 layer.close(index);
+     		          	 console.log(" aff"+textStatus);
+     		        	 layer.msg('您没有权限访问,请联系管理员', {
+		   					  icon: 2,
+		   					  time: 2000 //2秒关闭（如果不配置，默认是3秒）
+		   					}, function(){
+		   						renderTable();  
+		   					});
+     		          
+     		        	
+     		        	  
+     		    	  },
+     		    	  complete: function(XMLHttpRequest, textStatus){ //异步加载完成时回调
+     		    	  
+     		    	  }
+ 
+     		      });
+     		      
+     		      // 绑定节点的双击
+     		      dtree.on("nodedblclick('openTree1')", function(obj){
+     		        $("#parent_id").val(obj.param.nodeId);
+     		        $("#parent_name").val(obj.param.context);
+     		        
+     		        layer.close(index);
+     		      });
+     		    },
+     		    yes: function(index, layero) {
+     		      var param = dtree.getNowParam("openTree1"); // 获取当前选中节点
+     		      
+     		      $("#parent_id").val(param.nodeId);
+     		      $("#parent_name").val(param.context);
+     		      layer.close(index);
+     		    }
+     		  });
+     	
+     	
+
+             $(window).on("resize", function () {
+                 //layer.full(index);
+             });
+        	
+        	
+           
+        });
+      
+        
+        $('#btn-add').click(function () {
+        	 var index = layer.open({
+                 title: '增加白名单',
+                 type: 1,
+                 shade: 0.2,
+                 shadeClose: true,
+                 area: ['100%', '100%'],
+                 content: $('#add') ,
+                 success: function(layero, index){
+                	 
+                	 form.val("addPage",
+      
+                	 {id:"",parent_id:"",name:"" ,parent_name:""}
+                	 );
+                	 
+                	 
+            
+                 	$("#add").removeClass("layui-hide");
+                 	
+                 
+                   }
+                 
+             });
+     
+        	
+             $(window).on("resize", function () {
+                 //layer.full(index);
+             });
+             
+             
+        });
+        
+        
+        
+        form.on('submit(saveBtn)', function (data) {
+            var req=JSON.stringify(data.field);
+			$.ajax({
+			    type:"POST",
+			    url:"/api/savePermission",
+			    data:req,
+			    contentType:'application/json;charset=UTF-8',
+			    success:function(req){
+		           		   layer.msg('操作成功', {
+		   					  icon: 1,
+		   					  time: 2000 //2秒关闭（如果不配置，默认是3秒）
+		   					}, function(){
+		   						renderTable();  
+		   					});
+		           		   
+		           		 renderTable(); 
+		    			 layer.closeAll();
+		           	   
+		           
+					
+			    },
+			    error:function(jqXHR){
+			        console.log("Error: "+jqXHR.status);
+			    }
+			});
+			
+			 
+			
+            return false;
+        });
+        
+        
+        $('#btn-serach').click(function () {
+        	renderTable();
+        	table.reload("munu-table",null);
+        });
+
+        //监听工具条
+        table.on('tool(munu-table)', function (obj) {
+            var data = obj.data;
+            var layEvent = obj.event;
+            if (layEvent === 'del') {
+                $.ajax({
+    			    type:"POST",
+    			    url:"/api/deletePermission",
+    			    data:{"id":data.id},
+    			    //contentType:'application/json;charset=UTF-8',
+    			    success:function(req){
+    			    	
+    		           		  layer.msg(req.msg, {
+    		   					  icon: 1,
+    		   					  time: 2000 //2秒关闭（如果不配置，默认是3秒）
+    		   					}, function(){
+    		   						renderTable();  
+    		   					    layer.closeAll();
+    		   					});
+    		           	   
+    		           	
+    					
+    			    },
+    			    error:function(jqXHR){
+    			        console.log("Error: "+jqXHR.status);
+    			    }
+    			});
+                
+                
+            } else if (layEvent === 'edit') {
+            	 var index = layer.open({
+                     title: '增加白名单',
+                     type: 1,
+                     shade: 0.2,
+                     shadeClose: true,
+                     area: ['100%', '100%'],
+                     content: $('#add') ,
+                     success: function(layero, index){
+                    	 form.val("addPage",data);
+                		 
+                     
+                     	$("#add").removeClass("layui-hide");
+                     
+                       }
+                     
+                 });
+         
+            	
+                 $(window).on("resize", function () {
+                     //layer.full(index);
+                 });
+                 
+                 //layer.close(index);
+        
+            
+            	
+            	
+                layer.msg('修改' + data.id);
+            }
+        });
+    });
+</script>
+</body>
+</html>

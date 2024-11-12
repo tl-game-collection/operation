@@ -1,0 +1,733 @@
+
+<!-- saved from url=(0115)file:///D:/Backup/%E6%A1%8C%E9%9D%A2/%E5%91%B1%E5%91%B1%E6%A3%8B%E7%89%8C/%E5%91%B1%E5%91%B1%E6%A3%8B%E7%89%8C.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <title>楚汉棋牌</title>
+    <!-- Set render engine for 360 browser -->
+    <meta name="renderer" content="webkit">
+
+    <!-- No Baidu Siteapp-->
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+
+    <link rel="icon" type="image/png" href="./app/icon.png">
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="./app/icon.png">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Amaze UI">
+    <link rel="apple-touch-icon-precomposed" href="./app/icon.png">
+
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="/assets/logo57.png">
+    <meta name="msapplication-TileColor" content="#0e90d2">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1.0" name="viewport">
+    <link rel="stylesheet" href="./app/lay.css">
+    <style type="text/css">
+        #weixin-tip {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(0, 0, 0, 0.8);
+            filter: alpha(opacity=80);
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+        }
+
+        #weixin-tip p {
+            text-align: center;
+            margin: 0;
+            height: 100%;
+            position: relative;
+        }
+
+        #weixin-tip p img {
+            width: 100%;
+            height: 100%;
+        }
+
+        #weixin-tip .close {
+            color: #fff;
+            padding: 5px;
+            font: bold 24px/26px simsun;
+            text-shadow: 0 1px 0 #ddd;
+            position: absolute;
+            top: 0;
+            left: 5px;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        /* 提示框*/
+        .confirmBox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 45%;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            background: rgba(0, 0, 0, 0.4);
+            width: 100%;
+            height: 500px;
+            visibility: hidden;
+        }
+
+        .confirmBox .row1 {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            -ms-flex: 1;
+            flex: 1;
+        }
+
+        .confirmBox .row2 {
+            position: relative;
+            width: 290px;
+        }
+
+        .confirmBox .row2 .info {
+            width: 100%;
+            background-color: rgba(253, 253, 253, 0.95);
+            display: inline-block;
+            border-radius: .3em;
+        }
+
+        .confirmBox .row2 .info h2 {
+            padding-top: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .confirmBox .row2 .info .con {
+            padding: 0 1em 1em 1em;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .confirmBox .row2 .info .btn-box {
+            display: -webkit-box;
+            -webkit-box-orient: horizontal;
+            -webkit-box-pack: justify;
+            border-top: 1px #ECECEE solid;
+        }
+
+        .confirmBox .row2 .info .btn-box .btn-confirm {
+            -webkit-box-flex: 1;
+            padding: 14px 0;
+            text-align: center;
+            font-size: 16px;
+            color: #0080FA;
+        }
+
+        .confirmBox .row2 .info .btn-box .btn-cancel {
+            -webkit-box-flex: 1;
+            padding: 14px 0;
+            text-align: center;
+            font-size: 16px;
+            color: #0080FA;
+            border-right: 1px #ECECEE solid;
+        }
+
+        .confirmBox .row3 {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            -ms-flex: 1;
+            flex: 1;
+        }
+
+        @media  only screen
+        and (min-device-width: 240px)
+        and (max-device-width: 700px)
+        and (orientation: landscape) {
+            /*iphone landscape */
+            .confirmBox {
+                padding-top: 20% !important;
+            }
+        }
+
+        /*滚动浮层*/
+        .overlay {
+            width: 100%;
+            position: fixed;
+            bottom: -900px;
+            left: 0px;
+            z-index: 11;
+        }
+
+        .overlay .header {
+            background-color: #F3F3F3;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            font-size: 14px;
+            color: #666666;
+            font-weight: bold;
+        }
+
+        .overlay .header a {
+            display: block;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+
+        .overlay .content {
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        .overlay .content .tit {
+            margin-top: 0;
+            font-size: 12px;
+            color: #666666;
+            margin-bottom: 10px;
+        }
+
+        .overlay .btn-list {
+            position: relative;
+        }
+
+        .overlay .content #jc {
+            text-decoration: underline;
+            color: #ee272f;
+            font-size: 12px;
+            line-height: 26px;
+            position: absolute;
+            bottom: 0;
+            right: 10px;
+        }
+
+        .overlay .content #btn-trust {
+            display: block;
+            margin: 30px auto 10px auto;
+            color: #00A0EC;
+            font-size: 14px;
+            border-radius: 3em;
+            padding: 5px;
+            width: 40%;
+            text-align: center;
+            border: 1px solid #00A0EC;
+            line-height: 26px;
+        }
+
+        .overlay .content .step1 {
+            display: block;
+            width: 80%;
+            margin: 0 auto 20px auto;
+        }
+
+        .overlay .content .sign {
+            text-decoration: none;
+            border: 1px solid #dddddd;
+            border-radius: .3em;
+            padding: 7px 10px;
+            display: -webkit-box;
+            -webkit-box-orient: horizontal;
+            -webkit-box-pack: justify;
+            -webkit-box-align: center;
+            margin: 0 auto;
+        }
+
+        .overlay .sign img {
+            display: block;
+            width: 40px;
+            height: 41px;
+            margin-right: 10px;
+        }
+
+        .overlay .sign p {
+            font-size: 14px;
+            color: #B5B5BB;
+
+        }
+
+        .overlay .sign p.sign-name {
+            width: 80%;
+            overflow: hidden;
+            color: #000;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .overlay .finger {
+            display: block;
+            width: 24px;
+            position: relative;
+            top: -15px;
+            float: right;
+            right: 0;
+            z-index: 12;
+        }
+
+        a {
+            color: #8a8a8a;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .click_opacity{ width:100%; height:100%; background:#000; opacity:0.6; position:fixed; z-index:10000; top:0;}
+        .to_btn{ position:fixed; top:10px; right:10px; text-align:right; z-index:10001; font-family:"微软雅黑";}
+        .to_btn span{ display:block;}
+        .to_btn img{ width:20%; height:auto; display:inline-block;}
+        .to_btn .span1{ font-size:1.6rem; color:#fff; margin-top:5px;}
+        .to_btn{ color:#fff;}
+        .to_btn .span2{ display:inline-block; line-height:36px; width:80%; margin-bottom:12px; text-align:left; font-size:16px;}
+        .to_btn .span2 em{ display:inline-block; width:16px; height:16px; background:#009dd9; color:#fff; font-size:12px; text-align:center; line-height:16px; border:1px solid #fff; border-radius:50%; margin-right:3px;}
+        .to_btn .span2 img{ display:inline-block; width:30px; height:30px; margin:0px 5px;}
+        .to_btn span{ display:block; float:right;}
+        .to_btn .android_open img{ display:inline-block; width:150px; height:34px;}
+        #iosbtn1 {
+            width: 239px;
+            height: 58px;
+            background-color: #55bc07;
+            line-height: 58px;
+            font-size: 20px;
+            color: #fff;
+            border-radius: 5px;
+            box-shadow: 3px 3px 5px #888
+        }
+
+    </style>
+    <script src="./app/jquery.min.js.下載"></script>
+    <script src="./app/clipboard.min.js.下載"></script>
+    <script type="text/javascript">
+         var config = {
+                   /*scheme:必须*/
+                   scheme_IOS: '',
+                   scheme_Adr: 'http://www.jalson.cn/edition/program/android/app.apk',
+                   ios: 'https://app.00609.top/foqH27',
+                   // ios1: 'https://testflight.apple.com/join/GFJu4uSI',
+                   ios1: 'https://app.00609.top/foqH27',
+                   android: 'http://www.jalson.cn/edition/program/android/app.apk',
+                   timeout: 2500
+               };
+        var ua = navigator.userAgent.toLowerCase();
+        var is_weixin = function () {
+
+            if (ua.match(/MicroMessenger/i) == "micromessenger") {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        var platform = {
+            Android : function() {
+                return !!ua.match(/Android/i);
+            },
+            IOS : function() {
+                if (ua.match(/iPhone|iPad|iPod|macintosh/i)){
+                    var ver = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
+                    try {
+                        //alert(parseInt(ver[1]));
+                        return parseInt(ver[1]);
+                    }catch (e){
+                        return 1;
+                    }
+                };
+                return false;
+            },
+            OTHER: function () {
+                return !(this.Android() || this.IOS());
+            }
+        };
+
+        function downloadApp(plat) {
+			var req={};
+			var  gid=new Number(getQueryString("gid"));
+			var  uid=new Number(getQueryString("uid"));
+			        	req.gid=gid
+						req.uid=uid
+					    //req.bizChannel=getQueryString("bizChannel");
+					    //var req=JSON.stringify(req); 
+			var a=JSON.stringify(req);
+			var copyStr =a;
+            if ('' != copyStr) {
+                var clipboard1 = new ClipboardJS('.downloadBtn', {
+                    text: function() {
+                        return a
+                    }
+                });
+                var clipboard2 = new ClipboardJS('.downloadBtn1', {
+                    text: function() {
+                        return a;
+                    }
+                });
+                clipboard1.on('success', function(e) {
+                    if ( plat == undefined || "" == plat){
+                        plat = platform.IOS() ? "IOS" : platform.Android() ? "ANDROID" : "OTHER";
+                    } else {
+                        //window.location.href = platform.IOS() ? config.ios_appdown : config.android_appdown;
+                        if ("IOS" == plat) {
+                            window.location.href = config.ios;
+                        }else if ("IOS1" == plat) {
+                            window.location.href = config.ios1;
+                        }else if ("ANDROID" == plat){
+                            window.location.href = config.android;
+                        }
+                    }
+                });
+                clipboard2.on('success', function(e) {
+                    if ( plat == undefined || "" == plat){
+                        plat = platform.IOS() ? "IOS1" : platform.Android() ? "ANDROID" : "OTHER";
+                    } else {
+                        //window.location.href = platform.IOS() ? config.ios_appdown : config.android_appdown;
+                        if ("IOS" == plat) {
+                            window.location.href = config.ios;
+                        }else if ("IOS1" == plat) {
+                            window.location.href = config.ios1;
+                        }else if ("ANDROID" == plat){
+                            window.location.href = config.android;
+                        }
+                    }
+                });
+            } else {
+                if ( plat == undefined || "" == plat){
+                    plat = platform.IOS() ? "IOS" : platform.Android() ? "ANDROID" : "OTHER";
+                } else {
+                    //window.location.href = platform.IOS() ? config.ios_appdown : config.android_appdown;
+                    if ("IOS" == plat) {
+                        window.location.href = config.ios;
+                    }else if ("IOS1" == plat) {
+                        window.location.href = config.ios1;
+                    }else if ("ANDROID" == plat){
+                        window.location.href = config.android;
+                    }
+                }
+            }
+            return;
+        }
+
+        function getQueryString(name)
+        {
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if(r!=null)return  unescape(r[2]); return null;
+        }
+
+        function openclient() {
+            if (is_weixin())
+            {
+                if (platform.IOS()) {
+                    $("#weixin_ios").show();
+                    $("#weixin_android").hide();
+                }else{
+                    $("#weixin_ios").hide();
+                    $("#weixin_android").show();
+                }
+                return;
+            }
+            
+            
+    		var req={};
+			var  gid=new Number(getQueryString("gid"));
+			var  uid=new Number(getQueryString("uid"));
+			        	req.gid=gid
+						req.uid=uid
+			var a=JSON.stringify(req);
+            var copyStr1 =a;
+            if ('' != copyStr1) {
+                var clipboard = new ClipboardJS('.initBtn', {
+                    text: function() {
+                        return a;
+                    }
+                });
+                clipboard.on('success', function(e) {
+                    if (platform.IOS() > 8 ) {
+                        window.location.href = config.scheme_IOS;
+                        return;
+                    } else {
+                        var ifr = document.createElement('iframe');
+                        ifr.setAttribute('src', config.scheme_Adr);
+                        ifr.setAttribute('style', 'display:none');
+                        document.body.appendChild(ifr);
+                    }
+
+                    var startTime = Date.now();
+                    var t = setTimeout(function() {
+                        var endTime = Date.now();
+                        if (endTime - startTime < config.timeout + 500) {
+                            //alert("你还未安装 "+document.title+" APP!");
+                            downloadApp();
+                        }
+                    }, config.timeout);
+                    window.onblur = function() {
+                        startTime = 1;
+                        clearTimeout(t);
+                    }
+                });
+            } else {
+                if (platform.IOS() > 8 ) {
+                    window.location.href = config.scheme_IOS;
+                    return;
+                } else {
+                    var ifr = document.createElement('iframe');
+                    ifr.setAttribute('src', config.scheme_Adr);
+                    ifr.setAttribute('style', 'display:none');
+                    document.body.appendChild(ifr);
+                }
+                var startTime = Date.now();
+                var t = setTimeout(function() {
+                    var endTime = Date.now();
+                    if (endTime - startTime < config.timeout + 500) {
+                        //alert("你还未安装 "+document.title+" APP!");
+                        downloadApp();
+                    }
+                }, config.timeout);
+                window.onblur = function() {
+                    startTime = 1;
+                    clearTimeout(t);
+                }
+            }
+        }
+    </script>
+    <script type="text/javascript" src="./app/underscore-min.js.下載"></script>
+    <script type="text/javascript" src="./app/area.js.下載"></script>
+</head>
+<body>
+<table width="100%" cellspacing="0" style="margin-top:2rem;">
+    <tbody>
+    <tr align="center">
+        <td>
+            <img width="120px" height="120px" src="./app/icon.png">
+        </td>
+    </tr>
+    <tr align="center">
+        <td style="font-size:22px;padding-top: 0.5rem;">楚汉棋牌</td>
+    </tr>
+    <tr align="center">
+        <td style="padding-top: 0.5rem;">40.8MB</td>
+    </tr>
+    <tr align="center">
+        <td>
+            <p style="font-size: 14px;color:#6e6e6e; font-family: 微软雅黑; padding-top: 1.5rem; width: 300px;text-align: left;">
+               楚汉棋牌，全球最公平的第一国人棋牌。创新的房卡模式，轻松约局，安全可靠。
+            </p>
+            <br>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" style="">
+            <img id="androidbtn" src="./app/download_android_btn.png" onclick="downloadApp(&#39;ANDROID&#39;);" style="" class="downloadBtn">
+            <div id="iosbtn1" onclick="downloadApp(&#39;IOS1&#39;);" style="display:none;margin-bottom: 15px;" class="downloadBtn1">
+                苹果用户下载
+            </div>
+            <img id="allinone" src="./app/open_now_1.png" style="width:240px;height:50px;margin-top: 20px;display:none" class="initBtn">
+            
+            
+        </td>
+    </tr>
+    
+    </tbody>
+</table>
+
+<div id="weixin_ios" style="display:none">
+    <div class="click_opacity"></div>
+    <div class="to_btn">
+        <span class="span1"><img src="./app/click_btn.png"></span>
+        <span class="span2"><em>1</em> 点击右上角<img src="./app/menu.png">打开菜单</span>
+        <span class="span2"><em>2</em> 选择<img src="./app/safari.png">用Safari打开下载</span>
+    </div>
+</div>
+<div id="weixin_android" style="display: none">
+    <div class="click_opacity"></div>
+    <div class="to_btn">
+        <span class="span1"><img src="./app/click_btn.png"></span>
+        <span class="span2"><em>1</em> 点击右上角<img src="./app/menu_android.png">打开菜单</span>
+        <span class="span2 android_open"><em>2</em> 选择<img src="./app/android.png"></span>
+    </div>
+</div>
+
+<div id="weixin-tip">
+    <p>
+        <img src="./app/live_weixin.png" alt="微信扫描打开APP下载链接提示代码优化">
+        <span id="close" title="关闭" class="close">×</span>
+    </p>
+</div>
+<section class="confirmBox">
+    <div class="row1"></div>
+    <div class="row2">
+        <div class="info">
+            <h2>提示未受信任企业级开发者?</h2>
+
+            <div class="con">
+                iOS9系统的限制，首次打开前需要进入【设置&gt;&gt;通用&gt;&gt;描述文件】，找到对应的开发者证书，选择【信任】即可打开
+            </div>
+            <div class="btn-box">
+                <div class="btn-cancel">
+                    关闭
+                </div>
+                <div class="btn-confirm">
+                    详细教程
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row3"></div>
+</section>
+<section class="overlay">
+    <div class="header">安装提示<a href="javascript:void(0);" id="btn-cancel">×</a></div>
+    <div class="content">
+        <p class="tit">&nbsp;&nbsp;安装完成后，首次打开APP需要信任下方的描述文件</p>
+        <a class="sign" href="https://www.imaibei.com/download/imaibei.mobileprovision">
+            <img src="./app/setting.png">
+
+            <p class="sign-name">Xiamen Mixun Technology Co., Ltd.</p>
+
+            <p>&gt;</p>
+        </a>
+        <img src="./app/finger.png" class="finger">
+
+        <div class="btn-list">
+            <a href="https://www.imaibei.com/download/imaibei.mobileprovision" id="btn-trust">去信任</a>
+            <a href="https://www.imaibei.com/download/guide.html" id="jc">详细教程&gt;</a>
+        </div>
+
+    </div>
+</section>
+<div id="install_tip" class="install-tip-mask">
+    <div class="install-tip">
+        <h3>安装提示<a href="javascript:;" class="btn-close" data-stat-pos="guideClose">×</a></h3>
+        <section>
+            <h2>1. 同意安装，桌面将会生成<span id="appName"></span>图标</h2>
+            <div class="first-step-image" style=""></div>
+        </section>
+        <section>
+            <h2>2. 安装后，首次打开需要信任描述文件 <a id="jiaochengLianjie" href="http://download.che593.com/?uid=9326389&amp;gid=91927&amp;bizChannel=-1" target="_blank" class="jump-jc" data-stat-pos="guideJc">详细教程 &gt;&gt;</a></h2>
+            <div class="second-step-image">
+                <span class="setting-icon"></span>
+                <div>
+                    <h4 id="qiyeName"></h4>
+                </div>
+                <span class="setting-left"> &gt; </span>
+            </div>
+        </section>
+        <a id="zhengshuLianjie" href="http://download.che593.com/static/mobile_config/embedded.mobileprovision1" class="btn-install-go" data-stat-pos="guideTrust">快速信任</a>
+    </div>
+</div>
+<script>
+    var userAgent = navigator.userAgent.toLowerCase();
+
+    /*滚动浮层 取消*/
+    $('#btn-cancel').click(function () {
+        $('.overlay').animate({bottom: "-900px"});
+    });
+
+    /*提示框 取消&确认*/
+    $('.btn-cancel').click(function () {
+        $('.confirmBox').css('visibility', 'hidden');
+    });
+    $('.btn-confirm').click(function () {
+        window.open("http://tui.tongbu.com/HTML/guide-tui.html");
+    });
+    /*判断是否是微博或微信*/
+    function is_weixn() {
+        var ua = navigator.userAgent.toLowerCase();
+        if (ua.match(/MicroMessenger/i) == "micromessenger") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function is_weibo() {
+        var ua = navigator.userAgent.toLowerCase();
+        if (ua.match(/Weibo/i) == "weibo") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function addClass(el, css) {
+        el.className = el.className + ' ' + css;
+    }
+    function removeClass(el, css) {
+        el.className = el.className.replace(css, '');
+    }
+    function closeCover() {
+        removeClass(document.querySelector('.popup'), 'show');
+        addClass(document.querySelector('.popup'), 'hide');
+        return false;
+    }
+
+    if (is_weixn() || is_weibo()) {
+        var tags = document.getElementsByTagName('a');
+        for (var i = 0; i < tags.length; i++) {
+            if (tags[i].className == "d d1" || tags[i].className == "d d2") {
+                tags[i].addEventListener('click', function (e) {
+                    e.preventDefault();
+                    removeClass(document.querySelector('.popup'), 'hide');
+                    addClass(document.querySelector('.popup'), 'show');
+                    return false;
+                });
+            }
+        }
+    }
+    var s = getQueryString("s");
+    if (s == "www") {
+        removeClass(document.querySelector('.pc'), 'hide');
+    }
+</script>
+<script>
+    $(function() {
+        var isShare = '1';
+        if (isShare == '1') openclient();
+
+    });
+    if (is_weixin())
+    {
+        //alert(platform.IOS());
+        if (platform.IOS()) {
+            $("#weixin_ios").show();
+            $("#weixin_android").hide();
+        }else{
+            $("#weixin_ios").hide();
+            $("#weixin_android").show();
+        }
+    }else{
+        $(function () {
+            if(platform.OTHER()) {
+                $('#androidbtn').show();
+                $('#iosbtn').show();
+            }else {
+                if(! is_weixn()) {
+                    $('#allinone').bind('click', function () {
+                        if(platform.Android() || platform.IOS()) {
+                            openclient();
+                        }
+                    }).show();
+                }
+                if (platform.IOS()) {
+                    $('#iosbtn').show();
+                    $('#iosbtn1').show();
+                }else {
+                    $('#androidbtn').show();
+                }
+            }
+        });
+    }
+    //          window.onload = function () {
+    //              //自动执行
+    //              if(platform.Android() || platform.IOS) {
+    //                  openclient();
+    //              }
+    //          }
+
+</script>
+
+
+</body></html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+<!--         <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">玩家id</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="playerUid" id="playerUid" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-reset-btn"><i class="layui-icon"></i> 重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset> -->
+        
+                             正在开发中
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="day">今天 </button>
+ 				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="day7">近7天 </button>
+				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="day15">近15天 </button>
+				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="day30">近30天 </button>
+            </div>
+        </script>
+       <!--  <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table> -->
+
+    </div>
+</div>
+
+
+
+<!--亲友圈详情列表 -->
+<div class="layuimini-container layui-hide" id="clubView" >
+    <div class="layuimini-main">
+    	<table class="layui-hide" id="currentTableIdView" lay-filter="currentTableViewFilter"></table>
+	</div>
+</div>
+<!--比赛场详情列表  -->
+<div class="layuimini-container layui-hide" id="arenaView" >
+    <div class="layuimini-main">
+    	<table class="layui-hide" id="currentTableArenaView" lay-filter="currentTableArenaViewFilter"></table>
+	</div>
+</div>
+
+
+
+<div class="layuimini-container layui-hide" id="add" >
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form" lay-filter="addPage">
+
+			<div class="layui-form-item layui-hide">
+			    <label class="layui-form-label required">id</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="id"  class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">游戏地址</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="url" lay-verify="required"  class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">房卡消耗qq</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="qq" lay-verify="required"  class="layui-input">
+			    </div>
+			</div>
+			<div class="layui-form-item layui-form-text">
+			    <label class="layui-form-label">内容</label>
+			    <div class="layui-input-block">
+			      <textarea name="context" placeholder="请输入内容" class="layui-textarea"></textarea>
+			    </div>
+			</div>
+		   <div class="layui-form-item">
+			    <label class="layui-form-label required">备注</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="remark"  class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label">状态</label>
+			    <div class="layui-input-block">
+			      <input type="radio" name="status" value="true" title="正常">
+			      <input type="radio" name="status" value="false" title="禁用" checked>
+			    </div>
+			  </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table','laydate'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            laydate = layui.laydate,
+            table = layui.table;
+		debugger;
+		
+		var optime="";
+		
+		//时间插件
+		laydate.render({
+		    elem: '#test1' //指定元素
+		     ,range: true 
+		    ,btns: ['clear', 'confirm','now']
+		  });
+		
+        table.render({
+            elem: '#currentTableId',
+            url: '/api/getMoneyExpends',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            request: {
+                pageName: 'pageNum' //页码的参数名称，默认：page
+                ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+              },
+              
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'playerUid', width: 150, title: '玩家ID', sort: true},
+                {field: 'name', width: 150, title: '玩家昵称'},
+                {field: 'summoney', width: 150, title: '消耗房卡'},
+                {field: 'hallmoney', width: 150, title: '大厅消耗'},
+                {field: 'clubmoney', width: 150, title: '亲友圈消耗'},
+                {field: 'arenamoney', width: 150, title: '比赛场消耗'}
+            ]],
+            response:{
+            		    statusCode: 200
+            },
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+        
+      
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where:data.field
+            });
+
+            return false;
+        });
+        
+        
+        form.on('submit(data-reset-btn)', function (data) {
+        	var optime="";
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                },where:{playerUid:"",expendTime:""}
+            });
+
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+         var opertion=true;
+        table.on('toolbar(currentTableFilter)', function (obj) {
+        	
+        	const day=new Date(new Date().toLocaleDateString()).getTime();//当天0点
+        	
+        	
+        	const now1 = new Date(new Date().toLocaleDateString()); //前天0点
+        	//now1.setTime(now1.getTime() - 3600 * 1000 * 24 * 1);
+        	var day1=now1.getTime();
+        	
+ 
+        	
+        	const now7 = new Date(new Date().toLocaleDateString()); //前7天0点
+        	now7.setTime(now7.getTime() - 3600 * 1000 * 24 * 7);
+        	var day7=now7.getTime();
+     
+        	
+        	
+        	const now15 = new Date(new Date().toLocaleDateString()); //前15天0点
+        	now15.setTime(now15.getTime() - 3600 * 1000 * 24 * 15);
+        	const day15=now15.getTime();
+        	
+        	
+        	const now30 = new Date(new Date().toLocaleDateString()); //前30天0点
+        	now30.setTime(now30.getTime() - 3600 * 1000 * 24 * 30);
+        	const day30=now30.getTime();
+	
+			
+		
+        	
+        	var pid=$('#playerUid').val();
+        	
+            if (obj.event === 'day') {  // 监听添加操作
+            	optime=day1;
+            	  table.reload('currentTableId', {
+                      page: {
+                          curr: 1
+                      }
+                      , where:{expendTime:day1, playeruid:pid}
+                  }, 'data');
+            	
+             
+            } else if(obj.event === 'day7'){
+            	optime=day7;
+            	  table.reload('currentTableId', {
+                      page: {
+                          curr: 1
+                      }
+                      , where:{expendTime:day7,playeruid:pid}
+                  }, 'data');
+            	
+			}	
+			else if (obj.event === 'day15') {  // 监听删除操作
+				optime=day15;
+				  table.reload('currentTableId', {
+		                page: {
+		                    curr: 1
+		                }
+		                ,where:{expendTime:day15, playeruid:pid}
+		            }, 'data');
+				
+			}else if(obj.event === 'day30'){
+				optime=day30;
+				  table.reload('currentTableId', {
+		                page: {
+		                    curr: 1
+		                }
+		                , where:{expendTime:day30, playeruid:pid}
+		            }, 'data');
+				
+			}
+				
+         
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+
+        form.on('submit(saveBtn)', function (data) {
+       
+            var req=JSON.stringify(data.field);
+			$.ajax({
+			    type:"POST",
+			    url:"/api/saveMoneyExpend",
+			    data:req,
+			    contentType:'application/json;charset=UTF-8',
+			    success:function(req){
+			    	 setTimeout(function(){
+		           		  layer.msg('操作成功', {
+		   					  icon: 1,
+		   					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+		   					}, function(){
+		   						table.reload('currentTableId', {
+		   			                page: {
+		   			                    curr: 1
+		   			                }
+		   			                
+		   			            }, 'data');
+		   					      
+
+		   					});
+		           	  }, 500)
+		           	  
+		           	 layer.closeAll();
+					
+			    },
+			    error:function(jqXHR){
+			        console.log("Error: "+jqXHR.status);
+			    }
+			});
+			
+            return false;
+        });
+        
+    });
+</script>
+
+<script type="text/html" id="titleTpl">
+  {{JSON.parse(d.money).DIAMOND}}
+</script>
+
+</body>
+</html>

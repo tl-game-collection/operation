@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.softeem.mappers.sys.PermissionMapper">
+
+    <!-- 查询用户权限信息 -->
+    <select id="findPermissionsByRoleId" resultType="com.softeem.model.sys.Permission">
+        SELECT p.* from sys_permission p LEFT JOIN sys_role_permission rp on p.id = rp.permission_id WHERE rp.role_id IN
+        <foreach collection="roles" index="index" item="item" open="(" close=")" separator=",">
+            #{item.id}
+        </foreach>
+    </select>
+    
+    <!--查询系统权限  -->
+     <select id="findSysPermissions" resultType="com.softeem.model.sys.Permission">
+        SELECT  id,parent_id  , parent_ids  ,permission, url,name,available,orderNumber,menuIcon,isMenu from sys_permission  ORDER BY orderNumber
+    </select>
+    
+    
+    
+     <!--查询系统权限 通过用户  -->
+     <select id="findSysPermissionsByUserId" resultType="com.softeem.model.sys.Permission">
+		      SELECT
+			s.id,
+			s.parent_id,
+			s.parent_ids,
+			s.permission,
+			s.url,
+			s.NAME,
+			s.available,
+			s.orderNumber,
+			s.menuIcon,
+			s.isMenu 
+		FROM
+			sys_permission s  
+			LEFT JOIN sys_role_permission rp ON s.id = rp.permission_id 
+		WHERE
+			rp.role_id IN (
+			SELECT
+				r.id 
+			FROM
+				sys_role r
+				LEFT JOIN sys_user_role ur ON r.id = ur.role_id 
+			WHERE
+			ur.uid = #{uid})
+			
+		
+			ORDER BY s.orderNumber
+      
+    </select>
+    
+    
+  
+    
+     <select id="ListByParentId" resultType="com.softeem.model.sys.Permission">
+        SELECT  id,parent_id  , parent_ids  ,permission, url,name,available,orderNumber,menuIcon,isMenu from sys_permission 
+        WHERE parent_id=#{parent_id}
+    </select>
+    
+    
+
+</mapper> 

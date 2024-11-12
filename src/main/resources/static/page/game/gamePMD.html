@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>系统设置</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+    <style>
+        .layui-form-item .layui-input-company {width: auto;padding-right: 10px;line-height: 38px;}
+    </style>
+</head>
+<body>
+
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form" lay-filter="addPage"   id="gamePmdForm">
+
+			 <div class="layui-form-item">
+			    <label class="layui-form-label required">时间</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="time" readonly="readonly" id="time"    value="" class="layui-input">
+			    </div>
+			</div>
+			
+				
+		   <div class="layui-form-item layui-hide">
+			    <label class="layui-form-label required">开始时间</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="announceAt"    value="" class="layui-input">
+			    </div>
+			</div>
+		
+			<div class="layui-form-item layui-hide">
+			    <label class="layui-form-label required">结束时间</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="expireAt"   value="" class="layui-input">
+			    </div>
+			</div>
+			
+			
+		    <div class="layui-form-item">
+			    <label class="layui-form-label required">公告内容</label>
+			    <div class="layui-input-block">
+			         <textarea name="content" placeholder="请输入内容"   class="layui-textarea"></textarea>
+			    </div>
+			</div>
+			
+		
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">间隔</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="repeatInterval"     class="layui-input">
+			    </div>
+			</div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="setting">发布公告</button>
+                     <button class="layui-btn layui-btn-normal" lay-submit lay-filter="clearnting">撤销公告</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+
+<script>
+	function dateFtt(fmt,date){
+	 //author: meizz   
+	  var o = {   
+	    "M+" : date.getMonth()+1,                 //月份   
+	    "d+" : date.getDate(),                    //日   
+	    "h+" : date.getHours(),                   //小时   
+	    "m+" : date.getMinutes(),                 //分   
+	    "s+" : date.getSeconds(),                 //秒   
+	    "q+" : Math.floor((date.getMonth()+3)/3), //季度   
+	    "S"  : date.getMilliseconds()             //毫秒   
+	  };   
+	  if(/(y+)/.test(fmt))   
+	    fmt=fmt.replace(RegExp.$1, (date.getFullYear()+"").substr(4 - RegExp.$1.length));   
+	  for(var k in o)   
+	    if(new RegExp("("+ k +")").test(fmt))   
+	  fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
+	  return fmt;   
+	} 
+	
+	function crtTimeFtt(value){
+	    var crtTime = new Date(value);
+	    return dateFtt("yyyy-MM-dd hh:mm:ss",crtTime);//直接调用公共JS里面的时间类处理的办法     
+	}
+
+</script>
+
+<script>
+    layui.use(['form','laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+        	,$ = layui.jquery
+        	
+         var laydate = layui.laydate;
+        
+        
+        
+        laydate.render({
+            elem: '#time' //指定元素
+             ,type: 'datetime'
+             ,range: true 
+          });
+        
+        
+        function getAnnouncement(){
+            layui.form.render();
+
+        	  $.ajax({
+      		    type:"POST",
+      		    url:"/api/getAnnouncements",
+      		    data:{},
+      		    contentType:'application/json;charset=UTF-8',
+      		    success:function(req){
+      		    	var formdate=req.data[0];
+      		    	var a= crtTimeFtt(formdate.announceAt);
+      		    	var b= crtTimeFtt(formdate.expireAt);
+      		    	var time= a+ " - "+b;
+      		  
+      		    	formdate.time=time;
+      		    	form.val("addPage",formdate);
+      		    },
+      		    error:function(jqXHR){
+      		        console.log("Error: "+jqXHR.status);
+      		    }
+      		});
+        }
+        
+        
+        getAnnouncement();
+     
+        var date = new Date('2014-04-23 18:55:49:123');
+    	// 有三种方式获取
+    	var time1 = date.getTime();
+    	var time2 = date.valueOf();
+    	var time3 = Date.parse(date);
+
+        //监听提交
+        form.on('submit(setting)', function (data) {
+        	
+            var time=$("#time").val();
+            var timeArr=time.split(" - ");
+            var stime=timeArr[0];
+            var etime=timeArr[1];
+            
+            var sdate = new Date(stime).getTime();
+            var edate = new Date(etime).getTime();
+   
+            var reqdata= data.field
+            reqdata.announceAt=sdate;
+            reqdata.expireAt=edate;
+            
+        	
+            var req=JSON.stringify(reqdata);
+			$.ajax({
+			    type:"POST",
+			    url:"/api/postAnnouncement",
+			    data:req,
+			    contentType:'application/json;charset=UTF-8',
+			    success:function(req){
+					 layer.msg(req.msg, {
+	   					  icon: 1,
+	   					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+	   					})
+
+	   				
+	           	  getAnnouncement();
+					
+					
+					
+			    },
+			    error:function(jqXHR){
+			        console.log("Error: "+jqXHR.status);
+			    }
+			});
+			
+            return false;
+        });
+        
+        
+        //监听提交
+        form.on('submit(clearnting)', function (data) {
+            var req="";
+			$.ajax({
+			    type:"POST",
+			    url:"/api/clearAnnouncements",
+			    data:req,
+			    contentType:'application/json;charset=UTF-8',
+			    success:function(req){
+			    	layer.msg(req.msg, {
+	   					  icon: 1,
+	   					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+	   					})
+	   					
+	   			    getAnnouncement();
+			    },
+			    error:function(jqXHR){
+			        console.log("Error: "+jqXHR.status);
+			    }
+			});
+			
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

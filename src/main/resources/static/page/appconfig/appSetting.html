@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>系统设置</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+    <style>
+        .layui-form-item .layui-input-company {width: auto;padding-right: 10px;line-height: 38px;}
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form">
+        
+        
+         
+        
+            <div class="layui-form-item">
+                <label class="layui-form-label required">agencyApiUrl</label>
+                <div class="layui-input-block">
+                    <input type="text" name="agencyApiUrl"  value="http://www.baidu.com/"   class="layui-input">
+                    <tip>格式:http://www.baidu.com/</tip>
+                </div>
+            </div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label">登录类型</label>
+			    <div class="layui-input-block">
+			      <input type="radio" name="phone" value="1" title="ios">
+			      <input type="radio" name="phone" value="2" title="Android" checked>
+			    </div>
+			  </div>
+			
+			
+            <div class="layui-form-item">
+                <label class="layui-form-label required">agencyUrl</label>
+                <div class="layui-input-block">
+                    <input type="text" name="agencyUrl"  lay-reqtext="网站域名不能为空" placeholder="请输入网站域名"   class="layui-input">
+                </div>
+            </div>
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">filePath</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="filePath"  lay-reqtext="网站域名不能为空" placeholder="请输入网站域名"   class="layui-input">
+			    </div>
+			</div>
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">gameApi</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="gameApi"  lay-reqtext="网站域名不能为空" placeholder="请输入网站域名"   class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">gameDownload</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="gameDownload"  lay-reqtext="网站域名不能为空" placeholder="请输入网站域名"   class="layui-input">
+			    </div>
+			</div>
+			
+
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label">inWhiteList</label>
+			    <div class="layui-input-block">
+			      <input type="radio" name="inWhiteList" value="true" title="是">
+			      <input type="radio" name="inWhiteList" value="false" title="否" checked>
+			    </div>
+			  </div>
+		
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">loadImage</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="loadImage"  lay-reqtext="网站域名不能为空" placeholder="请输入网站域名"   class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">plistUrl</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="plistUrl"  lay-reqtext="网站域名不能为空" placeholder="请输入网站域名"  value="" class="layui-input">
+			    </div>
+			</div>
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">resVersion</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="resVersion"     class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">resourceUrl</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="resourceUrl"  lay-reqtext="网站域名不能为空" placeholder="请输入网站域名"   class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">statistics</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="statistics"  lay-reqtext="网站域名不能为空" placeholder="请输入网站域名"   class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">verDataUrl</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="verDataUrl"  lay-reqtext="网站域名不能为空" placeholder="请输入网站域名"   class="layui-input">
+			    </div>
+			</div>
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">version</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="version"    class="layui-input">
+			    </div>
+			</div>
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">zipMd5</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="zipMd5"     class="layui-input">
+			    </div>
+			</div>
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">zipSize</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="zipSize"  lay-reqtext="网站域名不能为空" placeholder="请输入网站域名"  value="" class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">zipVersion</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="zipVersion"  lay-reqtext="网站域名不能为空" placeholder="请输入网站域名"   class="layui-input">
+			    </div>
+			</div>
+			
+			
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="setting">确认保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form
+            , layer = layui.layer
+        	,$ = layui.jquery
+
+        //监听提交
+        form.on('submit(setting)', function (data) {
+          
+            
+            var d=data.field;
+            var req=JSON.stringify(d)
+
+            var req=JSON.stringify(data.field);
+
+			$.ajax({
+			    type:"POST",
+			    url:"/api/saveSystemConfigs",
+			    data:req,
+			    contentType:'application/json;charset=UTF-8',
+			    success:function(req){
+			    	alert("添加成功");
+					
+			    },
+			    error:function(jqXHR){
+			        console.log("Error: "+jqXHR.status);
+			    }
+			});
+			
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

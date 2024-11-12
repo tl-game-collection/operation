@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.softeem.mappers.tj.PlayerMapper">
+
+    <!-- 查询用户信息 -->
+    <select id="listPlayer" resultType="com.softeem.model.room.Player">
+        SELECT * from player 
+        <where>
+            <if test="uid != null and uid != ''">
+                and uid=#{uid}
+            </if>
+           
+        </where>
+    </select>
+    
+    
+     <select id="listRobotPlayer" resultType="com.softeem.model.room.Player">
+        SELECT * from player 
+        <where>
+            
+            uid <![CDATA[ >= ]]> #{uid}
+           
+        </where>
+    </select>
+    
+   <select id="listRobot" resultType="com.softeem.model.room.Player">
+        SELECT * from player 
+        <where>
+            
+            uid <![CDATA[ >= ]]> 60000000 and uid <![CDATA[ < ]]> 70000000
+           
+        </where>
+    </select>
+
+</mapper> 
+

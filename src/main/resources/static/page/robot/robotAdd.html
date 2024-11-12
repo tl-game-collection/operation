@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">玩家id</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="playerUid" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        
+                        <div class="layui-inline">
+                            <label class="layui-form-label">比赛场id</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="clubUid" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+ 				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="edit">启动机器人</button>
+            </div>
+        </script>
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        
+    </div>
+</div>
+
+<div class="layuimini-container layui-hide" id="add" >
+    <div class="layuimini-main">
+
+        <div class="layuimini-form" lay-filter="addPage">
+
+			<div class="layui-form-item ">
+			    <label class="layui-form-label required">机器人id</label>
+			    <div class="layui-input-block">
+			        <input type="number" id="playerUid" lay-verify="required" class="layui-input">
+			    </div>
+			    <div class="layui-input-block">
+			    	<font color="#FF0000">PS：**请输入机器人id后点击【查询】按钮进行查询**</font>
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">机器人名称</label>
+			    <div class="layui-input-block">
+			        <input type="text" id="playerName" readonly="readonly" class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">群Id</label>
+			    <div class="layui-input-block">
+			    	<select id="clubUid" lay-verify="" onchange="cha();">
+			    		<option value="0">请选择群</option>
+			    	</select>
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">群名称</label>
+			    <div class="layui-input-block">
+			        <input type="text" id="clubName" readonly="readonly" class="layui-input">
+			    </div>
+			</div>
+
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">玩法/房间</label>
+			    <div class="layui-input-block">
+			    	<select id="playId" lay-verify="" onchange="play();">
+			    		<option value="0">请选择玩法</option>
+			    	</select>
+			    	或
+			    	<select id="roomId" lay-verify="" onchange="room();">
+			    		<option value="0">请选择房间</option>
+			    	</select>
+			    </div>
+			    <input type="hidden" id="txt" class="layui-input">
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">房间规则</label>
+			    <div class="layui-input-block" id="light">
+<!--			        <textarea name="roomRules" placeholder="请输入内容" class="layui-textarea"></textarea>-->
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">赢分上限</label>
+			    <div class="layui-input-block">
+			        <input type="number" id="robotMaxScore" class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">赢分下限</label>
+			    <div class="layui-input-block">
+			        <input type="number" id="robotMinScore" class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">启动时间</label>
+			    <div class="layui-input-block">
+			        <input type="time" id="robotStart" class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">停止时间</label>
+			    <div class="layui-input-block">
+			        <input type="time" id="robotEnd" class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">入场竞技分</label>
+			    <div class="layui-input-block">
+			        <input type="number" id="robotEntranceScore" class="layui-input">
+			    </div>
+			</div>
+			
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn" onclick="sel();">查询</button>
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveReduceBtn" onclick="ok();">启动</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script src="../../js/jquery-3.2.1.min.js"></script>
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+        table.render({
+            elem: '#currentTableId',
+            url: '/api/getRobotList',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            request: {
+                pageName: 'pageNum' //页码的参数名称，默认：page
+                ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+              },
+              
+            cols: [[
+//                {type: "checkbox", width: 50},
+				{field: 'playerUid', width: 150, title: '玩家Id', sort: true},
+				{field: 'playerName', width: 150, title: '玩家昵称'},
+                {field: 'clubUid', width: 150, title: '比赛场Id',},
+                {field: 'clubName', width: 150, title: '比赛场昵称'},
+                {field: 'roomId', width: 150, title: '房间号'},
+                {field: 'roomRules', width: 300, title: '房间规则'},
+                {field: 'start', width: 150, title: '启动时间'},
+                {field: 'end', width: 150, title: '停止时间'},
+                {field: 'gold', width: 150, title: '所赢竞技分'
+//	               ,templet: function(d){
+	                	
+//	                    return d.gold/100;
+//	                }
+                
+                }
+            ]],
+            response:{
+            		    statusCode: 200
+            },
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where:data.field
+            }, 'data');
+
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+         var opertion=true;
+        table.on('toolbar(currentTableFilter)', function (obj) {
+        	
+            if (obj.event === 'editrecom') {  // 监听添加操作
+            	
+            } else if(obj.event === 'reduce'){
+			}	
+			else if (obj.event === 'edit') {  // 监听删除操作
+            	var index = layer.open({
+                    title: '修改竞技分',
+                    type: 1,
+                    shade: 0.2,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: $('#add') ,
+                    success: function(layero, index){
+                    	$("#add").removeClass("layui-hide");
+                    }
+                    
+                });
+				
+             
+            }
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+      
+/**        
+        form.on('submit(saveBtn)', function (data) {
+       
+            var req=JSON.stringify(data.field);
+			$.ajax({
+			    type:"POST",
+			    url:"/api/updateArenaGold",
+			    data:req,
+			    contentType:'application/json;charset=UTF-8',
+			    success:function(req){
+			    	 setTimeout(function(){
+		           		  layer.msg(req.msg, {
+		   					  icon: 1,
+		   					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+		   					}, function(){
+		   						table.reload('currentTableId', {
+		   			                page: {
+		   			                    curr: 1
+		   			                }
+		   			                
+		   			            }, 'data');
+		   					      
+
+		   					});
+		           	  }, 500)
+		           	  
+		           	 layer.closeAll();
+					
+			    },
+			    error:function(jqXHR){
+			        console.log("Error: "+jqXHR.status);
+			    }
+			});
+			
+            return false;
+        });
+        
+        form.on('submit(saveReduceBtn)', function (data) {
+        	var reqdate=data.field;
+        	reqdate.gold=-reqdate.gold
+        	 
+            var req=JSON.stringify(data.field);
+            alert(req);
+			$.ajax({
+			    type:"POST",
+			    url:"/api/getRobot",
+			    data:req,
+			    contentType:'application/json;charset=UTF-8',
+			    success:function(req){
+			    	 setTimeout(function(){
+		           		  layer.msg(req.msg, {
+		   					  icon: 1,
+		   					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+		   					}, function(){
+		   						table.reload('currentTableId', {
+		   			                page: {
+		   			                    curr: 1
+		   			                }
+		   			                
+		   			            }, 'data');
+		   					      
+
+		   					});
+		           	  }, 500)
+		           	  
+		           	 layer.closeAll();
+					
+			    },
+			    error:function(jqXHR){
+			        console.log("Error: "+jqXHR.status);
+			    }
+			});
+			
+            return false;
+        });
+*/        
+        
+        
+     
+        
+        
+    });
+    
+</script>
+
+<script type="text/html" id="titleTpl">
+  {{JSON.parse(d.money).DIAMOND}}
+</script>
+
+<script type="text/javascript">
+	function sel(){
+		var playerUid = document.getElementById("playerUid").value;
+   		if(playerUid==""){
+ 			alert("机器人Id为空");
+ 			return;
+ 		}
+// 		document.getElementById("playerUid").readOnly=true;
+ 		var select = document.getElementById("clubUid");
+// 		select.innerHTML="";
+ 		
+ 		$.ajaxSettings.async = false;    //设置为同步请求
+		$.post("/api/getClubList",{"playerUid":playerUid},function(json){
+			var msg = JSON.parse(json.msg);
+//			alert(JSON.stringify(msg));
+			var playerName=msg.playerName;
+			document.getElementById("playerName").value=playerName;
+			var clubs=msg.clubs;
+			if(clubs.length>0){
+				for(var i=0;i<clubs.length;i++){
+					var clubUid = unescape($(clubs[i]).attr("clubUid"));
+					var name = unescape($(clubs[i]).attr("name"));
+					var option = document.createElement("option");
+		    		option.setAttribute("value",clubUid);
+		    		var text = document.createTextNode(clubUid+":"+name);
+		    		option.appendChild(text);
+		    		select.appendChild(option);
+				}
+//				alert(select.innerHTML);
+			}
+		},"json");
+	};
+	
+	function cha(){
+		var select = document.getElementById("clubUid");
+   		//获取select下拉框Option的Value值：
+   		var val = select.value;
+   		if(val>0){
+   			//获取select下拉框Option的Text值：
+   			var clubUid = select.options[select.selectedIndex].value;
+			var txt = select.options[select.selectedIndex].text;
+			var clubName = txt.split(":")[1];
+			
+			document.getElementById("clubName").value = clubName;
+			
+			var select2 = document.getElementById("roomId");
+			var select3 = document.getElementById("playId");
+			
+			$.ajaxSettings.async = false;    //设置为同步请求
+			$.post("/api/getPlays",{"clubUid":clubUid},function(json){
+				select2.options.length = 0; //拼接数据之前，清空之前的数据
+				select3.options.length = 0;
+				
+				var option = document.createElement("option");
+	    		option.setAttribute("value",0);
+	    		var text = document.createTextNode("请选择房间");
+	    		option.appendChild(text);
+	    		select2.appendChild(option);
+			    		
+			    var option1 = document.createElement("option");
+	    		option1.setAttribute("value",0);
+	    		var text1 = document.createTextNode("请选择玩法");
+	    		option1.appendChild(text1);
+	    		select3.appendChild(option1);
+	    		
+			    var msg = JSON.parse(json.msg);
+//				alert(JSON.stringify(msg));
+				var plays=msg.plays;
+				var rooms=msg.rooms;
+				if(rooms.length>0){
+					for(var i=0;i<rooms.length;i++){
+//						var boxUid = unescape($(plays[i]).attr("boxUid"));
+						var boxName = unescape($(rooms[i]).attr("boxName"));
+						var roomId = unescape($(rooms[i]).attr("roomId"));
+						
+						var option2 = document.createElement("option");
+			    		option2.setAttribute("value",roomId);
+//				    	var text2 = document.createTextNode(boxUid+":"+boxName+":"+roomId);
+			    		var text2 = document.createTextNode(roomId+":"+boxName);
+			    		option2.appendChild(text2);
+			    		select2.appendChild(option2);
+					}
+				}
+				if(plays.length>0){
+					for(var i=0;i<plays.length;i++){
+						var boxUid = unescape($(plays[i]).attr("boxUid"));
+						var boxName = unescape($(plays[i]).attr("boxName"));
+						
+						var option2 = document.createElement("option");
+			    		option2.setAttribute("value",boxUid);
+				    	var text2 = document.createTextNode(boxUid+":"+boxName);
+			    		option2.appendChild(text2);
+			    		select3.appendChild(option2);
+					}
+				}
+			},"json");
+   		}
+   	};
+   	
+   	function room(){
+   		var select = document.getElementById("roomId");
+   		var roomId = select.options[select.selectedIndex].value;
+   		if(roomId==0){
+			alert("请选择房间");
+			return;
+		}
+		var light = document.getElementById("light");
+		var gameSubType = select.options[select.selectedIndex].text.split("_")[1];
+		if(gameSubType=="斗公牛"){
+			document.getElementById("txt").value=1;
+			light.innerHTML = "<table>"
+				+"<tr><td>"
+					+"1.下注：牛7下(<input name='rule' type='number' min='0' max='100' />%)射门，"
+						+"牛8(<input name='rule' type='number' min='0' max='100' />%)射门，"
+						+"牛9(<input name='rule' type='number' min='0' max='100' />%)射门，"
+						+"牛牛(<input name='rule' type='number' min='0' max='100' />%)射门，"
+						+"炸弹牛(<input name='rule' type='number' min='0' max='100' />%)射门<br>"
+					+"2.手动下庄：当前锅底分数高于首次锅底"
+						+"(<input name='rule' type='number' min='0' max='100' />倍)时"
+						+"(<input name='rule' type='number' min='0' max='100' />%)概率下庄，"
+						+"每高一倍，提高(<input name='rule' type='number' min='0' max='100' />%)下庄概率。"
+						+"（未开启手动下庄时，设置不生效）<br>"
+					+"3.连庄：(<input name='rule' type='number' min='0' max='100' />%)概率连庄<br><br>"
+					+"<center><font color='#FF0000'>注：上述所有判断都是基于前4张手牌的判断</font></center>"
+				+"</td></tr>"
+				+"</table>";
+		}else if(gameSubType=="明牌抢庄"){
+			var cowKingRazzType = select.options[select.selectedIndex].text.split("_")[2];
+			if(cowKingRazzType=="普通场"){
+				document.getElementById("txt").value=2;
+				light.innerHTML = "<table>"
+					+"<tr><td>"
+						+"1.牛1至牛5牌型：（<input name='rule' type='number' min='0' max='100' />%）"
+							+"抢庄最大倍，（<input name='rule' type='number' min='0' max='100' />%）"
+							+"随机抢，下最小注<br>"
+						+"2.牛6及以上：(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"牛6(<input name='rule' type='number' min='0' max='100' />%)下最大注，"
+							+"牛7（<input name='rule' type='number' min='0' max='100' />%）下最大注，"
+							+"牛8（<input name='rule' type='number' min='0' max='100' />%）下最大注，"
+							+"牛9（<input name='rule' type='number' min='0' max='100' />%）下最大注，"
+							+"牛牛（<input name='rule' type='number' min='0' max='100' />%）下最大注<br>"
+						+"3.炸弹牌型：<input name='rule' type='number' min='0' max='100' />%抢庄，"
+							+"<input name='rule' type='number' min='0' max='100' />%下最大注<br>"
+						+"4.可推注情况下，牛7(<input name='rule' type='number' min='0' max='100' />%)，"
+							+"牛8(<input name='rule' type='number' min='0' max='100' />%)，"
+							+"牛九(<input name='rule' type='number' min='0' max='100' />%)，"
+							+"牛牛(<input name='rule' type='number' min='0' max='100' />%)概率推注，"
+							+"炸弹(<input name='rule' type='number' min='0' max='100' />%)推注<br><br>"
+						+"<center><font color='#FF0000'>注：上述所有判断都是基于前4张手牌的判断</font></center>"
+					+"</td></tr>"
+					+"</table>";
+			}else if(cowKingRazzType=="疯狂王癞"){
+				document.getElementById("txt").value=3;
+				light.innerHTML = "<table>"
+					+"<tr><td>"
+						+"1.没王(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"(<input name='rule' type='number' min='0' max='100' />%)下最大注<br>"
+						+"2.满牛(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"(<input name='rule' type='number' min='0' max='100' />%)下最大注<br>"
+						+"3.不是满牛：(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"(<input name='rule' type='number' min='0' max='100' />%)下最大注<br>"
+						+"4.炸弹牌型：<input name='rule' type='number' min='0' max='100' />%抢庄，"
+							+"<input name='rule' type='number' min='0' max='100' />%下最大注<br>"
+						+"5.可推注情况下，牛7(<input name='rule' type='number' min='0' max='100' />%)，"
+							+"牛8(<input name='rule' type='number' min='0' max='100' />%)，"
+							+"牛九(<input name='rule' type='number' min='0' max='100' />%)概率推注，"
+							+"炸弹(<input name='rule' type='number' min='0' max='100' />%)推注<br><br>"
+						+"<center><font color='#FF0000'>注：上述所有判断都是基于前4张手牌的判断</font></center>"
+					+"</td></tr>"
+					+"</table>";
+			}else if(cowKingRazzType=="随机癞子"){
+				document.getElementById("txt").value=4;
+				light.innerHTML = "<table>"
+					+"<tr><td>"
+						+"1.没癞子(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"(<input name='rule' type='number' min='0' max='100' />%)下最大注<br>"
+						+"2.多个癞子：(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"(<input name='rule' type='number' min='0' max='100' />%)下最大注<br>"
+						+"3.满牛+花牌：(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"(<input name='rule' type='number' min='0' max='100' />%)下最大注<br>"
+						+"4.不是满牛：(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"(<input name='rule' type='number' min='0' max='100' />%)下最大注<br>"
+						+"5.炸弹牌型：<input name='rule' type='number' min='0' max='100' />%抢庄，"
+							+"<input name='rule' type='number' min='0' max='100' />%下最大注<br>"
+						+"6.可推注情况下，多癞子(<input name='rule' type='number' min='0' max='100' />%)，"
+							+"满牛(<input name='rule' type='number' min='0' max='100' />%)，"
+							+"牛九(<input name='rule' type='number' min='0' max='100' />%)概率推注，"
+							+"炸弹(<input name='rule' type='number' min='0' max='100' />%)推注<br><br>"
+						+"<center><font color='#FF0000'>注：上述所有判断都是基于前4张手牌的判断</font></center>"
+					+"</td></tr>"
+					+"</table>";
+			}else if(gameSubType=="通比玩法"){
+   				document.getElementById("txt").value=5;
+   				light.innerHTML = "<table>"
+   					+"<tr><td>"
+   						+"(<input name='rule' type='number' min='0' max='100' />%)下最大注，"
+   							+"(<input name='rule' type='number' min='0' max='100' />%)下随机注"
+   							+"(随机注为<input name='rule' type='number' min='0' max='100' />%的倍数)<br><br>"
+   					+"</td></tr>"
+   					+"</table>";
+   			}
+		}
+   	};
+   	
+   	function play(){
+   		var select = document.getElementById("playId");
+   		var playId = select.options[select.selectedIndex].value;
+   		if(playId==0){
+			alert("请选择玩法");
+			return;
+		}
+		var light = document.getElementById("light");
+		var gameSubType = select.options[select.selectedIndex].text.split("_")[1];
+		if(gameSubType=="斗公牛"){
+			document.getElementById("txt").value=1;
+			light.innerHTML = "<table>"
+				+"<tr><td>"
+					+"1.下注：牛7下(<input name='rule' type='number' min='0' max='100' />%)射门，"
+						+"牛8(<input name='rule' type='number' min='0' max='100' />%)射门，"
+						+"牛9(<input name='rule' type='number' min='0' max='100' />%)射门，"
+						+"牛牛(<input name='rule' type='number' min='0' max='100' />%)射门，"
+						+"炸弹牛(<input name='rule' type='number' min='0' max='100' />%)射门<br>"
+					+"2.手动下庄：当前锅底分数高于首次锅底"
+						+"(<input name='rule' type='number' min='0' max='100' />倍)时"
+						+"(<input name='rule' type='number' min='0' max='100' />%)概率下庄，"
+						+"每高一倍，提高(<input name='rule' type='number' min='0' max='100' />%)下庄概率。"
+						+"（未开启手动下庄时，设置不生效）<br>"
+					+"3.连庄：(<input name='rule' type='number' min='0' max='100' />%)概率连庄<br><br>"
+					+"<center><font color='#FF0000'>注：上述所有判断都是基于前4张手牌的判断</font></center>"
+				+"</td></tr>"
+				+"</table>";
+		}else if(gameSubType=="明牌抢庄"){
+			var cowKingRazzType = select.options[select.selectedIndex].text.split("_")[2];
+			if(cowKingRazzType=="普通场"){
+				document.getElementById("txt").value=2;
+				light.innerHTML = "<table>"
+					+"<tr><td>"
+						+"1.牛1至牛5牌型：（<input name='rule' type='number' min='0' max='100' />%）"
+							+"抢庄最大倍，（<input name='rule' type='number' min='0' max='100' />%）"
+							+"随机抢，下最小注<br>"
+						+"2.牛6及以上：(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"牛6(<input name='rule' type='number' min='0' max='100' />%)下最大注，"
+							+"牛7（<input name='rule' type='number' min='0' max='100' />%）下最大注，"
+							+"牛8（<input name='rule' type='number' min='0' max='100' />%）下最大注，"
+							+"牛9（<input name='rule' type='number' min='0' max='100' />%）下最大注，"
+							+"牛牛（<input name='rule' type='number' min='0' max='100' />%）下最大注<br>"
+						+"3.炸弹牌型：<input name='rule' type='number' min='0' max='100' />%抢庄，"
+							+"<input name='rule' type='number' min='0' max='100' />%下最大注<br>"
+						+"4.可推注情况下，牛7(<input name='rule' type='number' min='0' max='100' />%)，"
+							+"牛8(<input name='rule' type='number' min='0' max='100' />%)，"
+							+"牛九(<input name='rule' type='number' min='0' max='100' />%)，"
+							+"牛牛(<input name='rule' type='number' min='0' max='100' />%)概率推注，"
+							+"炸弹(<input name='rule' type='number' min='0' max='100' />%)推注<br><br>"
+						+"<center><font color='#FF0000'>注：上述所有判断都是基于前4张手牌的判断</font></center>"
+					+"</td></tr>"
+					+"</table>";
+			}else if(cowKingRazzType=="疯狂王癞"){
+				document.getElementById("txt").value=3;
+				light.innerHTML = "<table>"
+					+"<tr><td>"
+						+"1.没王(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"(<input name='rule' type='number' min='0' max='100' />%)下最大注<br>"
+						+"2.满牛(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"(<input name='rule' type='number' min='0' max='100' />%)下最大注<br>"
+						+"3.不是满牛：(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"(<input name='rule' type='number' min='0' max='100' />%)下最大注<br>"
+						+"4.炸弹牌型：<input name='rule' type='number' min='0' max='100' />%抢庄，"
+							+"<input name='rule' type='number' min='0' max='100' />%下最大注<br>"
+						+"5.可推注情况下，牛7(<input name='rule' type='number' min='0' max='100' />%)，"
+							+"牛8(<input name='rule' type='number' min='0' max='100' />%)，"
+							+"牛九(<input name='rule' type='number' min='0' max='100' />%)概率推注，"
+							+"炸弹(<input name='rule' type='number' min='0' max='100' />%)推注<br><br>"
+						+"<center><font color='#FF0000'>注：上述所有判断都是基于前4张手牌的判断</font></center>"
+					+"</td></tr>"
+					+"</table>";
+			}else if(cowKingRazzType=="随机癞子"){
+				document.getElementById("txt").value=4;
+				light.innerHTML = "<table>"
+					+"<tr><td>"
+						+"1.没癞子(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"(<input name='rule' type='number' min='0' max='100' />%)下最大注<br>"
+						+"2.多个癞子：(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"(<input name='rule' type='number' min='0' max='100' />%)下最大注<br>"
+						+"3.满牛+花牌：(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"(<input name='rule' type='number' min='0' max='100' />%)下最大注<br>"
+						+"4.不是满牛：(<input name='rule' type='number' min='0' max='100' />%)抢庄，"
+							+"(<input name='rule' type='number' min='0' max='100' />%)下最大注<br>"
+						+"5.炸弹牌型：<input name='rule' type='number' min='0' max='100' />%抢庄，"
+							+"<input name='rule' type='number' min='0' max='100' />%下最大注<br>"
+						+"6.可推注情况下，多癞子(<input name='rule' type='number' min='0' max='100' />%)，"
+							+"满牛(<input name='rule' type='number' min='0' max='100' />%)，"
+							+"牛九(<input name='rule' type='number' min='0' max='100' />%)概率推注，"
+							+"炸弹(<input name='rule' type='number' min='0' max='100' />%)推注<br><br>"
+						+"<center><font color='#FF0000'>注：上述所有判断都是基于前4张手牌的判断</font></center>"
+					+"</td></tr>"
+					+"</table>";
+			}else if(gameSubType=="通比玩法"){
+   				document.getElementById("txt").value=5;
+   				light.innerHTML = "<table>"
+   					+"<tr><td>"
+   						+"(<input name='rule' type='number' min='0' max='100' />%)下最大注，"
+   							+"(<input name='rule' type='number' min='0' max='100' />%)下随机注"
+   							+"(随机注为<input name='rule' type='number' min='0' max='100' />%的倍数)<br><br>"
+   					+"</td></tr>"
+   					+"</table>";
+   			}
+		}
+   	};
+   	
+   	function ok(){
+   		var playerUid = document.getElementById("playerUid").value;
+   		if(playerUid==""){
+  				alert("机器人Id为空");
+  				return;
+  			}
+   		var select1 = document.getElementById("clubUid");
+   		var clubUid = select1.options[select1.selectedIndex].value;
+//   		var clubUid = select1.options[select1.selectedIndex].text.split(":")[0];
+   		if(clubUid==0){
+				alert("请选择俱乐部");
+				return;
+			}
+   		var select2 = document.getElementById("roomId");
+   		var roomId = select2.options[select2.selectedIndex].value;
+//   		var roomId = select2.options[select2.selectedIndex].text.split(":")[0];
+  		var select3 = document.getElementById("playId");
+  		var playId = select3.options[select3.selectedIndex].value;
+  		
+  		if(roomId==0 && playId==0){
+			alert("请选择玩法或房间");
+			return;
+		}
+  			
+   		var start = document.getElementById("robotStart").value;
+   		var end = document.getElementById("robotEnd").value;
+   		var start1 = start.replace(":","");
+   		var end1 = end.replace(":","");
+   		if(start1>=end1){
+   			alert("开始时间必须小于结束时间");
+  				return;
+   		}
+   		var maxScore = document.getElementById("robotMaxScore").value;
+   		if(maxScore==""){
+  				alert("上限为空");
+  				return;
+  			}
+   		var minScore = document.getElementById("robotMinScore").value;
+   		if(minScore==""){
+  				alert("下限为空");
+  				return;
+  			}
+   		var robotEntranceScore = document.getElementById("robotEntranceScore");
+   		var entranceScore = robotEntranceScore.value;
+   		if(entranceScore==""){
+  				alert("入场分为空");
+  				return;
+  			}
+   		
+   		var rules = "";
+   		var rule = document.getElementsByName("rule");
+   		for(var i=0;i<rule.length;i++){
+   			var val = rule[i].value;
+   			if(rules==""){
+   				rules = val;
+   			}
+   			else{
+   				rules = rules+","+val;
+   			}
+   		};
+    		
+   		var txt = document.getElementById("txt").value;
+   		
+   		var playerName = document.getElementById("playerName").value;
+   		var clubName = document.getElementById("clubName").value;
+   		
+   		$.ajaxSettings.async = false;    //设置为同步请求
+		$.post("/api/getRobot",
+			{
+				"playerUid":playerUid,"clubUid":clubUid,"roomId":roomId,"start":start,"end":end,
+				"maxScore":maxScore,"minScore":minScore,"entranceScore":entranceScore,"rules":rules,
+				"txt":txt,"playerName":playerName,"clubName":clubName,"playId":playId
+			},function(json){
+				layer.closeAll();
+		},"json");
+   	};
+    	
+</script>
+
+</body>
+</html>

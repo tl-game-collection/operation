@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache updateCheck="false">
+<diskStore path="java.io.tempdir" />
+<defaultCache maxElementsInMemory="1000" eternal="false"
+timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="false" />
+<cache name="ios" maxElementsInMemory="10000"
+eternal="false" timeToIdleSeconds="300000" timeToLiveSeconds="600000"
+overflowToDisk="false" />
+<cache name="android" maxElementsInMemory="10000"
+eternal="false" timeToIdleSeconds="300000" timeToLiveSeconds="600000"
+overflowToDisk="false" />
+</ehcache>

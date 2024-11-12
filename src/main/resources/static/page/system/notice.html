@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+           <!--              <div class="layui-inline">
+                            <label class="layui-form-label">公告id</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="id" autocomplete="off" class="layui-input">
+                            </div>
+                        </div> -->
+                    
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 增加 </button>
+ 				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="edit">编辑 </button>
+				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="reduce"> 删除 </button>
+ 				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="view">查看 </button>
+            </div>
+        </script>
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+    </div>
+</div>
+
+<div class="layuimini-container layui-hide" id="add" >
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form" lay-filter="addPage" id="addPage">
+
+			<div class="layui-form-item layui-hide">
+			    <label class="layui-form-label required">id</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="id"  class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">公告名称</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="name" lay-verify="required"  class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label">公告类型</label>
+			    <div class="layui-input-block">
+			      <input type="radio" name="type" value="0" title="更新公告">
+			      <input type="radio" name="type" value="1" title="系统公告" checked>
+			    </div>
+			  </div>
+			<div class="layui-form-item layui-form-text">
+			    <label class="layui-form-label">公告内容</label>
+			    <div class="layui-input-block">
+			    
+			    	<div id="div1">
+				      
+				    </div>
+			      <textarea id="context"  name="context" placeholder="请输入内容" class="layui-textarea layui-hide"></textarea>
+			    </div>
+			</div>
+		 
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label">状态</label>
+			    <div class="layui-input-block">
+			      <input type="radio" name="status" value="true" title="正常">
+			      <input type="radio" name="status" value="false" title="禁用" checked>
+			    </div>
+			  </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="layuimini-container layui-hide" id="view" >
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form" lay-filter="viewpage" id="viewpage">
+			
+			
+			<div class="layui-form-item layui-form-text">
+			    <label class="layui-form-label">公告内容</label>
+			    <div class="layui-input-block">
+			    
+			    	<div id="div2">
+				      
+				    </div>
+			    </div>
+			</div>
+        </div>
+    </div>
+</div>
+
+
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table','wangEditor'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            wangEditor = layui.wangEditor;
+        
+        var E = window.wangEditor
+	    var editor = new E('#div1')
+        var context = $('#context')
+        
+        //配置菜单
+        editor.customConfig.menus = [
+        	'head',  // 标题
+            'bold',  // 粗体
+            'fontSize',  // 字号
+            'italic',  // 斜体
+            'foreColor',  // 文字颜色
+       ]
+
+        editor.customConfig.onchange = function (html) {
+            // 监控变化，同步更新到 textarea
+            context.val(html)
+        }
+        editor.create()
+        // 初始化 textarea 的值
+        context.val(editor.txt.html())
+        table.render({
+            elem: '#currentTableId',
+            url: '/api/getNotices',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            request: {
+                pageName: 'pageNum' //页码的参数名称，默认：page
+                ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+              },
+              
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'id', width: 150, title: '公告id', sort: true},
+                {field: 'name', width: 150, title: '公告名称'},
+
+                
+                {field: 'type', width: 150, title: '公告类型', templet: function(d){
+              		if(d.type==0){
+              			return '更新公告'
+              		}else if(d.type==1){
+              			return '系统公告'
+              		}else{
+              			return '';
+              		}
+                   
+                }},
+                {field: 'context', title: '内容'},
+            ]],
+            response:{
+            		    statusCode: 200
+            },
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where:data.field
+            }, 'data');
+
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+         var opertion=true;
+        table.on('toolbar(currentTableFilter)', function (obj) {
+        	
+            if (obj.event === 'add') {  // 监听添加操作
+            	var checkStatus = table.checkStatus('currentTableId');
+            	if(checkStatus.data.length>=1){
+            		layer.alert(
+                       	"请取消选中的公告 在新增"
+                    );
+            		return;
+            	}
+                var index = layer.open({
+                    title: '增加公告',
+                    type: 1,
+                    shade: 0.2,
+                    shadeClose: true,
+                    fixed:true,
+                    scrollbar:false,
+                    area: ['100%', '100%'],
+                    content: $('#add') ,
+                    success: function(layero, index){
+                    	$("#add").removeClass("layui-hide");
+                    	form.val("addPage", {
+                    		  "id": "" 
+                    		});
+                    }
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if(obj.event === 'reduce'){
+            	var checkStatus = table.checkStatus('currentTableId');
+            	if(checkStatus.data.length!=1){
+            		layer.alert(
+                       	"请选中一个公告"
+                    );
+            		return;
+            	}
+            	var rowData=checkStatus.data[0];
+            	var reqDate={};
+            	reqDate.uuid=rowData.uuid;
+            	 $.ajax({
+                     type:"POST",
+                     url:"/api/deleteNotice",
+                     data:{"id":rowData.id},
+                     success:function(req){
+                    	
+                     },
+                     error:function(jqXHR){
+                         console.log("Error: "+jqXHR.status);
+                     }
+                 });
+           	  
+           	  setTimeout(function(){
+           		  layer.msg('操作成功', {
+   					  icon: 1,
+   					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+   					}, function(){
+   						table.reload('currentTableId', {
+   			                page: {
+   			                    curr: 1
+   			                }
+   			            }, 'data');
+   					});
+           	  }, 500)
+           	   layer.closeAll(); 
+				$(window).on("resize", function () {
+				    layer.full(index);
+				});	
+			}	
+			else if (obj.event === 'edit') {  // 监听删除操作
+				var checkStatus = table.checkStatus('currentTableId');
+				if(checkStatus.data.length!=1){
+            		layer.alert(
+                       	"请选中一个公告"
+                    );
+            		return;
+            	}
+            	var rowData=checkStatus.data[0];
+            	
+            	var index = layer.open({
+                    title: '编辑公告',
+                    type: 1,
+                    shade: 0.2,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: $('#add') ,
+                    success: function(layero, index){
+                    	$("#add").removeClass("layui-hide");
+                    	
+                    	form.val("addPage",rowData
+               		    );
+                    	
+                    	
+                    	editor.txt.html(rowData.context);
+                    
+                      }
+                    
+                });
+				
+             
+            }else if(obj.event === 'view'){
+            	var checkStatus = table.checkStatus('currentTableId');
+				if(checkStatus.data.length!=1){
+            		layer.alert(
+                       	"请选中一个公告"
+                    );
+            		return;
+            	}
+            	var rowData=checkStatus.data[0];
+            	
+            	var index = layer.open({
+                    title: '查看公告',
+                    type: 1,
+                    shade: 0.2,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: $('#view') ,
+                    success: function(layero, index){
+                    	$("#view").removeClass("layui-hide");
+                    	
+                    	
+                    	form.val("viewpage",rowData
+               		    );
+                    	
+                    
+                    	
+                    	
+                    	var E = window.wangEditor
+                 	    var editor = new E('#div2')
+                         //配置菜单
+                         editor.customConfig.menus = [
+                         
+                        ]
+
+                       
+                    	editor.create()
+                    	editor.txt.html(rowData.context);
+                    	editor.$textElem.attr('contenteditable', true);
+                    	  
+                      }
+                    
+                });
+            	
+            }
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+
+                var index = layer.open({
+                    title: '编辑用户',
+                    type: 2,
+                    shade: 0.2,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '../../page/table/edit.html',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delete') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            }
+        });
+        
+        
+        form.on('submit(saveBtn)', function (data) {
+       
+            var req=JSON.stringify(data.field);
+			$.ajax({
+			    type:"POST",
+			    url:"/api/saveNotice",
+			    data:req,
+			    contentType:'application/json;charset=UTF-8',
+			    success:function(req){
+			    	 setTimeout(function(){
+		           		  layer.msg('操作成功', {
+		   					  icon: 1,
+		   					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+		   					}, function(){
+		   						table.reload('currentTableId', {
+		   			                page: {
+		   			                    curr: 1
+		   			                }
+		   			                
+		   			            }, 'data');
+		   					      
+
+		   					});
+		           	  }, 500)
+		           	  
+		           	 layer.closeAll();
+					
+			    },
+			    error:function(jqXHR){
+			        console.log("Error: "+jqXHR.status);
+			    }
+			});
+			
+            return false;
+        });
+        
+    });
+</script>
+
+<script type="text/html" id="titleTpl">
+  {{JSON.parse(d.money).DIAMOND}}
+</script>
+
+</body>
+</html>

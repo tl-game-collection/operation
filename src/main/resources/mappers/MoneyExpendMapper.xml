@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.softeem.mappers.room.MoneyExpendMapper">
+
+    <!-- 查询房卡消耗记录 -->
+<!--     <select id="listMoneyExpend" resultType="com.softeem.model.room.MoneyExpend">
+		SELECT
+			a.*,
+			p.`name` 
+		FROM
+			(
+			SELECT
+				playerUid,
+				roomType,
+				SUM( `value` ) AS money,
+				FROM_UNIXTIME( expendTime / 1000, '%Y-%m-%d' ) AS time 
+			FROM
+				moneyExpendRecord 
+			WHERE
+				expendType IN ( 9, 11, 13 )
+			GROUP BY
+				playerUid,
+				roomType 
+			ORDER BY
+				playerUid,
+				roomType 
+			) a
+			LEFT JOIN player p ON a.playerUid = p.uid    	    
+    </select> -->
+    
+    
+<!--      <select id="listMoneyExpend" resultType="com.softeem.model.room.MoneyExpend">
+		
+    	select * from (SELECT
+				playerUid,
+				p.`name`,
+				SUM( `value` ) AS summoney
+			FROM
+				moneyExpendRecord m  LEFT JOIN player p ON m.playerUid = p.uid   
+			WHERE
+				expendType IN ( 9, 11, 13 )  <if test="m.playerUid != null" > and m.playerUid=#{m.playerUid} </if>
+         
+           
+			GROUP BY
+				 m.playerUid  LIMIT #{pageNum},#{pageSize})  )a
+				LEFT JOIN 
+				(SELECT
+				playerUid,
+				roomType,
+				fromUid,
+				SUM( `value` ) AS money
+				
+			FROM
+				moneyExpendRecord 
+			WHERE
+				expendType IN ( 9, 11, 13 ) 
+			GROUP BY
+			    playerUid,
+					roomType ) b  
+					on a.playerUid= b.playerUid
+    </select> -->
+    
+    
+     <select id="listMoneyExpend" resultType="com.softeem.model.room.MoneyExpend">
+		SELECT
+				m.*,
+				p.`name` 
+			FROM
+				(
+				SELECT
+					playerUid,
+					SUM( `value` ) AS 'summoney',
+					SUM(
+					IF
+					( roomType = 3, `value`, 0 )) AS 'hallmoney',
+					SUM(
+					IF
+					( roomType = 4, `value`, 0 )) AS 'clubmoney',
+					SUM(
+					IF
+					( roomType = 5, `value`, 0 )) AS 'arenamoney' 
+				FROM
+					moneyexpendrecord m 
+				WHERE
+					expendType IN ( 9, 11, 13 )  
+					<if test="m.playerUid != null" > and m.playerUid=#{m.playerUid} </if> 
+					
+					<if test="m.expendTime != null" > and m.expendTime>=#{m.expendTime} </if>
+					
+					<if test="m.time != null" > and m.expendTime  &gt;=unix_timestamp() </if>
+					
+					
+				GROUP BY
+					playerUid 
+				) m
+				LEFT JOIN player p ON m.playerUid = p.uid
+		
+    </select>
+    
+    
+    
+      <select id="listMoneyAdd" resultType="com.softeem.model.room.MoneyExpend">
+		SELECT
+				m.*,
+				p.`name` 
+			FROM
+				(
+				SELECT
+					playerUid,
+					SUM( `value` ) AS 'summoney',
+					SUM(
+					IF
+					( roomType = 3, `value`, 0 )) AS 'hallmoney',
+					SUM(
+					IF
+					( roomType = 4, `value`, 0 )) AS 'clubmoney',
+					SUM(
+					IF
+					( roomType = 5, `value`, 0 )) AS 'arenamoney' 
+				FROM
+					moneyexpendrecord m 
+				WHERE
+					expendType IN ( 7,8)  
+					<if test="m.playerUid != null" > and m.playerUid=#{m.playerUid} </if> 
+					
+					<if test="m.expendTime != null" > and m.expendTime>=#{m.expendTime} </if>
+					
+					<if test="m.time != null" > and m.expendTime  &gt;=unix_timestamp() </if>
+					
+					
+				GROUP BY
+					playerUid 
+				) m
+				LEFT JOIN player p ON m.playerUid = p.uid
+		
+    </select>
+    
+    
+    
+    
+    
+    
+    
+        <!-- 通过玩家id查询房卡消耗记录-->
+    <select id="listMoneyExpendByPlayerUid" resultType="com.softeem.model.room.MoneyExpend">
+
+ 
+        <choose>
+            <when test="roomType=4">
+               select m.fromUid  as  clubUid ,  m.`value` as  clubmoney ,FROM_UNIXTIME(m.expendTime/1000,'%Y-%m-%d') as time, c.`name` as clubName     from  moneyexpendrecord   m
+				LEFT JOIN   clubinfo  c  ON  c.uid=m.fromUid
+				where 
+			  m.playerUid=#{playerUid} and m.roomType=4 and  m.expendType IN ( 9, 11, 13 )
+			  	<if test="expendTime != null" > and m.expendTime>=#{expendTime} </if>
+					
+				<if test="time != null" > and m.expendTime  &gt;=unix_timestamp() </if>
+			  
+            </when>
+            <when test="roomType=5">
+                select m.fromUid  as  clubUid ,  m.`value` as  arenamoney ,FROM_UNIXTIME(m.expendTime/1000,'%Y-%m-%d') as time, c.`name` as clubName     from  moneyexpendrecord   m
+				LEFT JOIN   clubinfo  c  ON  c.uid=m.fromUid
+				where 
+			  m.playerUid=#{playerUid} and m.roomType=5 and  m.expendType IN ( 9, 11, 13 )
+			  	<if test="expendTime != null" > and m.expendTime>=#{expendTime} </if>
+					
+				<if test="time != null" > and m.expendTime  &gt;=unix_timestamp() </if>
+            </when>
+            <otherwise>
+               select m.fromUid  as  clubUid ,  m.`value` as  clubmoney ,FROM_UNIXTIME(m.expendTime/1000,'%Y-%m-%d') as time, c.`name` as clubName     from  moneyexpendrecord   m
+				LEFT JOIN   clubinfo  c  ON  c.uid=m.fromUid
+				where 
+			  m.playerUid=-1 and m.roomType=0 and  m.expendType IN ( 9, 11, 13 )
+			  	<if test="expendTime != null" > and m.expendTime>=#{expendTime} </if>
+					
+				<if test="time != null" > and m.expendTime  &gt;=unix_timestamp() </if>
+  	
+            </otherwise>
+        </choose>
+
+		    	 
+    	 
+    
+    
+    <!-- 	<if test="roomType=4" >
+    	 select m.fromUid  as  clubUid ,  m.`value` as  clubmoney ,FROM_UNIXTIME(m.expendTime/1000,'%Y-%m-%d') as time, c.`name` as clubName     from  moneyexpendrecord   m
+			LEFT JOIN   clubinfo  c  ON  c.uid=m.fromUid
+			where 
+		  m.playerUid=3301 and m.roomType=4 and  m.expendType IN ( 9, 11, 13 )
+    	
+    	 </if>
+    	 
+    	 
+    	<if test="roomType=5" >
+    	 select m.fromUid  as  clubUid ,  m.`value` as  arenamoney ,FROM_UNIXTIME(m.expendTime/1000,'%Y-%m-%d') as time, c.`name` as clubName     from  moneyexpendrecord   m
+			LEFT JOIN   clubinfo  c  ON  c.uid=m.fromUid
+			where 
+		  m.playerUid=3301 and m.roomType=5 and  m.expendType IN ( 9, 11, 13 )
+    	
+    	 </if> -->
+    	
+    </select>
+    
+    
+    
+    
+      <!-- 通过玩家id查询房卡消耗记录-->
+   <!--  <select id="listMoneyExpendByPlayerUid" resultType="com.softeem.model.room.MoneyExpend">
+    	
+    	SELECT
+			a.*,
+			p.`name` 
+		FROM
+			(
+			SELECT
+				playerUid,
+				roomType,
+				SUM( `value` ) AS money,
+				FROM_UNIXTIME( expendTime / 1000, '%Y-%m-%d' ) AS time 
+			FROM
+				moneyExpendRecord 
+			WHERE
+				expendType IN ( 9, 11, 13 )   and playerUid=#{playerUid}
+			GROUP BY
+				playerUid,
+				roomType 
+			ORDER BY
+				playerUid,
+				roomType 
+			) a
+			LEFT JOIN player p ON a.playerUid = p.uid    	    
+    </select> -->
+    
+    
+    <select id="listMoneyExpendSum" resultType="com.softeem.model.room.MoneyExpend">
+	    SELECT
+			playerUid,
+			SUM( `value` ) AS money 
+		FROM
+			moneyExpendRecord 
+		WHERE
+			expendType IN ( 9, 11, 13 ) 
+		GROUP BY
+			playerUid
+    	
+    </select>
+
+  
+
+</mapper> 

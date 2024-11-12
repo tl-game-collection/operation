@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.softeem.mappers.room.ServiceFeeMapper">
+
+     <select id="ListServiceFee" resultType="com.softeem.model.room.ServiceFee">
+		SELECT
+			ce.clubUid,
+			c.NAME AS clubName,
+			c.ownerId AS ownerId,
+			ce.playerUid AS playerUid,
+			p.NAME AS playerName,
+			SUM( inMoney ) AS money 
+		FROM
+			clubrewardvaluerecord ce
+			LEFT JOIN clubinfo c ON ce.clubUid = c.uid
+			LEFT JOIN player p ON ce.playerUid = p.uid 
+		WHERE 1=1 
+		<if test="clubUid != null" > and ce.clubUid=#{clubUid} </if> 
+		<if test="optTime != null" > and optTime>=#{optTime} </if>
+					
+		  and optTime  &gt;=unix_timestamp() 
+		GROUP BY
+			ce.clubuid
+    </select>
+    
+    
+    <select id="ListServiceFeeDetil" resultType="com.softeem.model.room.ServiceFee">
+	    SELECT
+				ce.clubUid,
+				c.NAME AS clubName,
+				c.ownerId AS ownerId,
+				ce.playerUid AS playerUid,
+				p.NAME AS playerName,
+				ce. inMoney  AS money 
+			FROM
+				clubrewardvaluerecord ce
+				LEFT JOIN clubinfo c ON ce.clubUid = c.uid
+				LEFT JOIN player p ON ce.playerUid = p.uid 
+			WHERE 1=1 
+			<if test="clubUid != null" > and ce.clubUid=#{clubUid} </if> 
+			<if test="playerUid != null" > and ce.playerUid=#{playerUid} </if> 
+			<if test="optTime != null" > and optTime>=#{optTime} </if>
+					
+		     and optTime  &gt;=unix_timestamp() 
+    </select>
+    
+    
+    
+    
+
+  
+
+</mapper> 

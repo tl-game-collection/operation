@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">机器人id</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="uid" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+ 				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="edit">修改昵称</button>
+				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="editrecom">修改头像</button>
+				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="editclub">群列表</button>
+            </div>
+        </script>
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        
+         <script type="text/html" id="currentTableBar">
+        </script>
+    </div>
+</div>
+<!-- 昵称  -->
+<div class="layuimini-container layui-hide" id="add" >
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form" lay-filter="addPage">
+
+			<div class="layui-form-item layui-hide">
+			    <label class="layui-form-label required">机器人id</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="uid"  class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">机器人昵称</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="name" lay-verify="required" class="layui-input">
+			    </div>
+			</div>
+			
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 头像  -->
+<div class="layuimini-container layui-hide" id="recomPage" >
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form" lay-filter="recomForm">
+
+			<div class="layui-form-item layui-hide">
+			    <label class="layui-form-label required">机器人id</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="uid"  class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">机器人头像</label>
+			    <div class="layui-input-block">
+				    <!-- 这种可以打开相机或文件，"jpg,png,gif"这种打开只能上传特定文件且没有相机 -->
+				    <input type="file" accept="image/*" ref="avatarInput" id = "newImage">
+				</div>
+			</div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveRecomBtn">确认保存</button>
+                </div>
+            </div>
+            
+         </div>
+         </div>
+</div>
+
+<!-- 群列表  -->
+<div class="layuimini-container layui-hide" id="clubPage">
+
+        <script type="text/html" id="toolbar">
+			<div class="layui-inline">
+            	<label class="layui-form-label">群id</label>
+                <div class="layui-input-inline">
+                	<input type="text" id="clubId" autocomplete="off" class="layui-input">
+               	</div>
+				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" onclick="addRobot();">新增</button>
+            </div>
+            <div class="layui-btn-container">
+				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" onclick="delRobot();">删除</button>
+            </div>
+        </script>
+    <div class="layuimini-main">
+    	<div class="layui-form layuimini-form" lay-filter="clubForm">
+	    	<div class="layui-form-item layui-hide">
+			    <label class="layui-form-label required">机器人id</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="uid" id="playerUid" class="layui-input">
+			    </div>
+			</div>
+		</div>
+        <table class="layui-hide" id="club" lay-filter="robet"></table>
+    </div>
+</div>
+
+
+<script src="../../js/jquery-3.2.1.min.js"></script>
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+//		debugger;//断点
+        table.render({
+            elem: '#currentTableId',
+            url: '/api/getRobots',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            request: {
+                pageName: 'pageNum' //页码的参数名称，默认：page
+                ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+              },
+              
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'uid', width: 150, title: '机器人id', sort: true},
+                {field: 'name', width: 150, title: '机器人昵称'},
+                {field: 'icon', width: 150, title: '机器人头像'},
+                {field: 'clubUids', width: 150, title: '拥有群列表'}
+                
+                ,{title: '操作', minWidth: 150, toolbar:'#currentTableBar', align: "center"}
+            ]],
+            response:{
+            		    statusCode: 200
+            },
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+        
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where:data.field
+            }, 'data');
+
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+         var opertion=true;
+        table.on('toolbar(currentTableFilter)', function (obj) {
+        	
+            if (obj.event === 'editrecom') {  // 监听添加操作
+            	var checkStatus = table.checkStatus('currentTableId');
+            	if(checkStatus.data.length!=1){
+            		layer.alert(
+                       	"请先选中一个玩家后修改"
+                    );
+            		return;
+            	}
+            	var rowData=checkStatus.data[0];
+                 var index = layer.open({
+                    title: '修改头像',
+                    type: 1,
+                    shade: 0.2,
+                    shadeClose: true,
+                    fixed:true,
+                    scrollbar:false,
+                    area: ['100%', '100%'],
+                    content: $('#recomPage') ,
+                    success: function(layero, index){
+                    	$("#recomPage").removeClass("layui-hide");
+                    	form.val("recomForm",rowData);
+                      }
+                }); 
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if(obj.event === 'editclub'){
+            	var checkStatus = table.checkStatus('currentTableId');
+            	if(checkStatus.data.length!=1){
+            		layer.alert(
+                       	"请选中一个账号"
+                    );
+            		return;
+            	}
+            	var rowData=checkStatus.data[0];
+            	var index = layer.open({
+                    title: '群列表',
+                    type: 1,
+                    shade: 0.2,
+                    shadeClose: true,
+                    fixed:true,
+                    scrollbar:false,
+                    area: ['100%', '100%'],
+                    content: $('#clubPage') ,
+                    success: function(layero, index){
+                    	$("#clubPage").removeClass("layui-hide");
+                    	form.val("clubPage",rowData);
+                    	form.val("clubForm",rowData);
+                    	var playerUid = rowData.uid;
+                    	//获取群列表
+						table.render({
+				            elem: '#club',
+				            url: '/api/getRobotClubs?playerUid='+playerUid,
+				            toolbar: '#toolbar',
+				            defaultToolbar: ['filter', 'exports', 'print', {
+				                title: '提示',
+				                layEvent: 'LAYTABLE_TIPS',
+				                icon: 'layui-icon-tips'
+				            }],
+				            request: {
+				                pageName: 'pageNum' //页码的参数名称，默认：page
+				                ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+				              },
+				              
+				            cols: [[
+				                {type: "checkbox", width: 50},
+				                {field: 'clubUid', width: 150, title: '群ID', sort: true},
+				                {field: 'name', width: 150, title: '群名称'},
+				            ]],
+				            response:{
+				            		    statusCode: 200
+				            },
+				            limits: [10, 15, 20, 25, 50, 100],
+				            limit: 15,
+				            page: true,
+				            skin: 'line'
+				        });
+        
+                    }
+                });	
+			}	
+			else if (obj.event === 'edit') {  // 监听删除操作
+				var checkStatus = table.checkStatus('currentTableId');
+				if(checkStatus.data.length!=1){
+            		layer.alert(
+                       	"请选中一个机器人id"
+                    );
+            		return;
+            	}
+            	var rowData=checkStatus.data[0];
+            	
+            	var index = layer.open({
+                    title: '编辑昵称',
+                    type: 1,
+                    shade: 0.2,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: $('#add') ,
+                    success: function(layero, index){
+                    	$("#add").removeClass("layui-hide");
+                    	
+                    	form.val("addPage",rowData);
+                    
+                      }
+                    
+                });
+				
+             
+            }
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+        });
+        
+        
+        form.on('submit(saveBtn)', function (data) {
+       
+            var req = JSON.stringify(data.field);
+			$.ajax({
+			    type:"POST",
+			    url:"/api/updRobotName",
+			    data:req,
+			    contentType:'application/json;charset=UTF-8',
+			    success:function(req){
+			    	 setTimeout(function(){
+		           		  layer.msg(req.msg, {
+		   					  icon: 1,
+		   					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+		   					}, function(){
+		   						table.reload('currentTableId', {
+		   			                page: {
+		   			                    curr: 1
+		   			                }
+		   			                
+		   			            }, 'data');
+		   					      
+
+		   					});
+		           	  }, 500)
+		           	  
+		           	 layer.closeAll();
+					
+			    },
+			    error:function(jqXHR){
+			        console.log("Error: "+jqXHR.status);
+			    }
+			});
+			
+            return false;
+        });
+        
+        
+        //上传图片
+        form.on('submit(saveRecomBtn)', function (data) {
+			var formData = new FormData(); 
+			formData.append('image', $('#newImage')[0].files[0]);  //添加图片信息的参数
+			formData.append('playerUid', data.field.uid); 
+			$.ajax({
+			    url: '/api/updRobotIcon',
+			    type: 'POST',
+			    cache: false, //上传文件不需要缓存
+			    data: formData,
+			    processData: false, // 告诉jQuery不要去处理发送的数据
+			    contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+			    success: function (data) {
+			       window.alert("上传成功");
+			    },
+			    error: function (data) {
+			    	window.alert("上传失败");
+			    }
+			})
+            return false;
+        });
+        
+    });
+    
+</script>
+
+<script type="text/html" id="titleTpl">
+  {{JSON.parse(d.money).DIAMOND}}
+</script>
+
+<script type="text/javascript">
+	function addRobot(){
+		var clubId = document.getElementById("clubId").value;
+		if(clubId==""){
+			alert("请输入群Id");
+			return;
+		}
+		var playerUid = document.getElementById("playerUid").value;
+		$.ajaxSettings.async = false;    //设置为同步请求
+		$.post("/api/addRobotClubs",{"playerUid":playerUid,"clubId":clubId},function(json){
+		},"json");
+	};
+	
+	function delRobot(){
+		var table = document.getElementById("clubPage");
+		var clubIds = "";
+		var trs = table.querySelectorAll("tr[data-index]");
+		for(var i=0;i<trs.length;i++){
+			var tr = trs[i];
+//			alert(tr.innerHTML);
+			var boxs = tr.getElementsByTagName("input");
+			for(var j=0;j<boxs.length;j++){
+				var box = boxs[j];
+				if(box.checked){
+					var clubUids = tr.querySelector("td[data-field='clubUid']");
+					var clubUid = clubUids.querySelector("div").innerHTML;
+					clubIds += ","+clubUid
+				}
+			}
+		}
+		alert(clubIds);
+		if(clubIds==""){
+			alert("请勾选群Id");
+			return;
+		}
+		var playerUid = document.getElementById("playerUid").value;
+		alert(playerUid);
+		$.ajaxSettings.async = false;    //设置为同步请求
+		$.post("/api/delRobotClubs",{"playerUid":playerUid,"clubIds":clubIds},function(json){
+		},"json");
+	};
+</script>
+
+</body>
+</html>

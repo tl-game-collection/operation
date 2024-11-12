@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用户名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 增加 </button>
+ 				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="edit">编辑 </button>
+				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="setRole">设置角色 </button>
+				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="reduce"> 删除 </button>
+            </div>
+        </script>
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+    </div>
+</div>
+
+<div class="layuimini-container layui-hide" id="add" >
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form" lay-filter="addPage">
+
+			<div class="layui-form-item layui-hide">
+			    <label class="layui-form-label required">id</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="uid"  class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">用户名</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="username" lay-verify="required"  class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">密码</label>
+			    <div class="layui-input-block">
+			        <input type="password" name="password" lay-verify="required"  class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">真实姓名</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="name" lay-verify="required"  class="layui-input">
+			    </div>
+			</div>
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label">状态</label>
+			    <div class="layui-input-block">
+			      <input type="radio" name="state" value="0" title="正常">
+			      <input type="radio" name="state" value="1" title="禁用" checked>
+			    </div>
+			  </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<div class="layuimini-container layui-hide" id="setRole" >
+    <div class="layuimini-main">
+		<div class="layui-form layuimini-form" lay-filter="setRolePage">
+        	<div class="layui-form-item layui-hide">
+			    <label class="layui-form-label required">用户id</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="uid"  class="layui-input">
+			    </div>
+			</div>
+
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">用户</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="username" readonly="readonly" class="layui-input">
+			    </div>
+			</div>
+			
+			 <div class="layui-form-item">
+				<label class="layui-form-label">角色</label>
+				<div class="layui-input-block" id="tag_ids2">
+	  
+      		</div>
+			
+	
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="setRolesaveBtn">确认保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table','selectM'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            selectM=layui.selectM
+            table = layui.table;
+		debugger;
+        table.render({
+            elem: '#currentTableId',
+            url: '/api/getUsers',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            request: {
+                pageName: 'pageNum' //页码的参数名称，默认：page
+                ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+              },
+              
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'uid', width: 150, title: '用户ID', sort: true},
+                {field: 'username', width: 150, title: '用户名'},
+                {field: 'name', width: 150, title: '真实名称'},
+                
+                {field: 'roles', width: 150, title: '角色', templet: function(d){
+                	  var arr = $.map(d.roles, function(n, i){
+	         			  var newDate={};
+	         			  newDate.id=""
+	         		      newDate.role=n.role;
+	         		      newDate.description=n.description
+	         		        return newDate;
+	         		    });
+                	  var s="";
+                	  for(var i=0;i<arr.length;i++){
+                		   if(i!=arr.length-1){
+                			   s+=arr[i].role+"," 
+                		   }else{
+                			   s+=arr[i].role;
+                		   }
+                		   
+                	  }
+	
+                    return s;
+  		
+                }},
+                
+                
+                {field: 'state', width: 150, title: '状态', templet: function(d){
+                    return d.state==0 ?  '正常':'禁用'
+                }},
+                
+                
+            ]],
+            response:{
+            		    statusCode: 200
+            },
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+        
+        
+        var tagData = [{"id":12,"name":"长者","status":0},{"id":13,"name":"工厂"},{"id":14,"name":"小学生"},{"id":15,"name":"大学生"},{"id":16,"name":"研究生"},{"id":17,"name":"教师"},{"id":18,"name":"记者"}];    
+        
+        
+        
+	      /*   $.ajax({
+	        	type:"GET",
+				url:'../../api/getRoles',
+				dataType:'json',
+				contentType:'application/json;charset=UTF-8',
+				async:false,
+				success:function(json){
+					//tagData=json;
+					
+					 console.log(json.data);
+				},
+				error: function(){
+					console.error(MOD_NAME+' hint：候选数据ajax请求错误 ');
+					d = false;
+				}
+			}); */
+	        
+	       
+		
+        
+        var tagIns2 = selectM({
+            //元素容器【必填】
+            elem: '#tag_ids2'
+            
+            //候选数据【必填】
+            ,data: '/api/getRoleSelect'
+            
+            //默认值
+            ,selected: [12,17] 			
+            
+            //最多选中个数，默认5
+      			,max : 1
+            
+      			//input的name 不设置与选择器相同(去#.)
+      			,name: 'tag2'
+      			
+      			//值的分隔符
+      			,delimiter: ','
+            
+      			//候选项数据的键名
+      			,field: {idName:'id',titleName:'role'}
+            
+            
+          });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where:data.field
+            }, 'data');
+
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+         var opertion=true;
+        table.on('toolbar(currentTableFilter)', function (obj) {
+        	
+            if (obj.event === 'add') {  // 监听添加操作
+            	var checkStatus = table.checkStatus('currentTableId');
+            	if(checkStatus.data.length>=1){
+            		layer.alert(
+                       	"请取消选中的用户 在新增"
+                    );
+            		return;
+            	}
+                var index = layer.open({
+                    title: '增加用户',
+                    type: 1,
+                    shade: 0.2,
+                    shadeClose: true,
+                    fixed:true,
+                    scrollbar:false,
+                    area: ['100%', '100%'],
+                    content: $('#add') ,
+                    success: function(layero, index){
+                    	$("#add").removeClass("layui-hide");
+                      }
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if(obj.event === 'reduce'){
+            	var checkStatus = table.checkStatus('currentTableId');
+            	if(checkStatus.data.length!=1){
+            		layer.alert(
+                       	"请选中一个用户"
+                    );
+            		return;
+            	}
+            	var rowData=checkStatus.data[0];
+            	var reqDate={};
+            	reqDate.uuid=rowData.uuid;
+            	 $.ajax({
+                     type:"POST",
+                     url:"/api/deleteUser",
+                     data:{"uid":rowData.uid},
+                     success:function(req){
+                    	 setTimeout(function(){
+                      		  layer.msg(req.msg, {
+              					  icon: 1,
+              					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+              					}, function(){
+              						table.reload('currentTableId', {
+              			                page: {
+              			                    curr: 1
+              			                }
+              			            }, 'data');
+              					});
+                      	  }, 500)
+                      	   layer.closeAll(); 
+                    	
+                     },
+                     error:function(jqXHR){
+                         console.log("Error: "+jqXHR.status);
+                     }
+                 });
+           	  
+           	 
+				$(window).on("resize", function () {
+				    layer.full(index);
+				});	
+			}	
+			else if (obj.event === 'edit') {  // 监听删除操作
+				var checkStatus = table.checkStatus('currentTableId');
+				if(checkStatus.data.length!=1){
+            		layer.alert(
+                       	"请选中一个用户"
+                    );
+            		return;
+            	}
+            	var rowData=checkStatus.data[0];
+            	
+            	var index = layer.open({
+                    title: '编辑用户',
+                    type: 1,
+                    shade: 0.2,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: $('#add') ,
+                    success: function(layero, index){
+                    	$("#add").removeClass("layui-hide");
+                    	
+                    	form.val("addPage",rowData
+               		    );
+                    
+                      }
+                    
+                });
+				
+             
+            }else if(obj.event ==='setRole'){
+            	var checkStatus = table.checkStatus('currentTableId');
+				if(checkStatus.data.length!=1){
+            		layer.alert(
+                       	"请选中一个用户"
+                    );
+            		return;
+            	}
+            	var rowData=checkStatus.data[0];
+            	var index = layer.open({
+                    title: '设置角色',
+                    type: 1,
+                    shade: 0.2,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: $('#setRole') ,
+                    success: function(layero, index){
+                    	$("#setRole").removeClass("layui-hide");
+                    	form.val("setRolePage",rowData
+               		    );
+                      }
+                    
+                });
+            	
+            	
+            }
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+
+                var index = layer.open({
+                    title: '编辑用户',
+                    type: 2,
+                    shade: 0.2,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '../../page/table/edit.html',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delete') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            }
+        });
+        
+        
+        form.on('submit(saveBtn)', function (data) {
+       
+            var req=JSON.stringify(data.field);
+			$.ajax({
+			    type:"POST",
+			    url:"/api/saveUser",
+			    data:req,
+			    contentType:'application/json;charset=UTF-8',
+			    success:function(req){
+			    	 setTimeout(function(){
+		           		  layer.msg('操作成功', {
+		   					  icon: 1,
+		   					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+		   					}, function(){
+		   						table.reload('currentTableId', {
+		   			                page: {
+		   			                    curr: 1
+		   			                }
+		   			                
+		   			            }, 'data');
+		   					      
+
+		   					});
+		           	  }, 500)
+		           	  
+		           	 layer.closeAll();
+					
+			    },
+			    error:function(jqXHR){
+			        console.log("Error: "+jqXHR.status);
+			    }
+			});
+			
+            return false;
+        });
+        
+        form.on('submit(setRolesaveBtn)', function (data) {
+        	var d= data.field;
+        	var req;
+            console.log('tagIns1 当前选中的值名：',tagIns2.selected);
+            console.log('tagIns1 当前选中的值：',tagIns2.values);
+            console.log('tagIns1 当前选中的名：',tagIns2.names); 
+            d.roles=tagIns2.values;
+           // var req=tagIns2.values;
+            
+            var arr = $.map(tagIns2.selected, function(n, i){
+   			  var newDate={};
+   			  newDate.uid=d.uid;
+   		      newDate.role_id=n.id;
+   		        return newDate;
+   		    });
+            
+            
+            var reqNull=[];
+   		    var newDate={};
+			  newDate.id=""
+		      newDate.role_id="-1";
+		      newDate.uid=d.uid;
+		      reqNull.push(newDate);
+            
+            if(arr.length !=0){
+            	   req=JSON.stringify(arr);
+            }else{
+            	 req=JSON.stringify(reqNull);
+            }
+            
+            
+            
+			 $.ajax({
+			    type:"POST",
+			    url:"/api/saveUserRole",
+			    data:req,
+			    contentType:'application/json;charset=UTF-8',
+			    success:function(req){
+			    	 setTimeout(function(){
+		           		  layer.msg(req.msg, {
+		   					  icon: 1,
+		   					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+		   					}, function(){
+		   						table.reload('currentTableId', {
+		   			                page: {
+		   			                    curr: 1
+		   			                }
+		   			                
+		   			            }, 'data');
+		   					      
+
+		   					});
+		           	  }, 500)
+		           	  
+		           	 layer.closeAll();
+					
+			    },
+			    error:function(jqXHR){
+			        console.log("Error: "+jqXHR.status);
+			    }
+			}); 
+			
+            return false;
+        });
+        
+    });
+</script>
+
+<script type="text/html" id="titleTpl">
+  {{JSON.parse(d.money).DIAMOND}}
+</script>
+
+</body>
+</html>

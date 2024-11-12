@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">圈id</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="clubUid" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="layui-inline">
+                            <label class="layui-form-label">圈主id</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="playerUid" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+ 				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="edit">设置桌子 </button>
+				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="addRobet">添加机器人 </button>
+            </div>
+        </script>
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+    </div>
+</div>
+
+
+
+<div class="layuimini-container layui-hide" id="robetPage">
+
+        <script type="text/html" id="toolbar">
+            <div class="layui-btn-container">
+				<button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="addRobet">添加机器人 </button>
+            </div>
+        </script>
+    <div class="layuimini-main">
+        <table class="layui-hide" id="robet" lay-filter="robet"></table>
+    </div>
+</div>
+
+
+
+
+
+
+
+<div class="layuimini-container layui-hide" id="add">
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form"  lay-filter="addPage">
+        
+        
+        
+        	<div class="layui-form-item">
+			    <label class="layui-form-label required">玩家ID</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="playerUid" readonly="readonly"    class="layui-input">
+			    </div>
+			</div>
+ 
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">圈ID</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="clubUid" readonly="readonly"    class="layui-input">
+			    </div>
+			</div>
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">圈名称</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="clubName" readonly="readonly"    class="layui-input">
+			    </div>
+			</div>
+			
+			
+			
+			<div class="layui-form-item layui-hide">
+			    <label class="layui-form-label required">楼层</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="floorUid" lay-verify="number"  class="layui-input">
+			    </div>
+			</div>
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">楼层</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="floorName"  readonly="readonly"  class="layui-input">
+			    </div>
+			</div>
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">桌子类型</label>
+			    <div class="layui-input-block">
+			        <select name="type">
+                        <option value=""></option>
+                        <option value="1" selected="">2人场</option>
+                        <option value="2">3人场</option>
+                        <option value="3">4人场</option>
+                    </select>
+			    </div>
+			</div>
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">最小桌子数</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="robotDeskMin" lay-verify="number"     class="layui-input">
+			    </div>
+			</div>
+			
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">最大桌子数</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="robotDeskMax" lay-verify="number"     class="layui-input">
+			    </div>
+			</div>
+			
+			
+			<div class="layui-form-item">
+			    <label class="layui-form-label required">随机时间</label>
+			    <div class="layui-input-block">
+			        <input type="text" name="randomTime" lay-verify="number"   placeholder="请输入 0-60  秒之前的时间"    class="layui-input">
+			    </div>
+			</div>
+			
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="setting">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+		debugger;
+        table.render({
+            elem: '#currentTableId',
+            url: '/api/getClubs',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            request: {
+                pageName: 'pageNum' //页码的参数名称，默认：page
+                ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+              },
+              
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'clubUid', width: 150, title: '圈id', sort: true},
+                {field: 'clubName', width: 150, title: '圈名称'},
+                {field: 'playerUid', width: 150, title: '圈主id'},
+                {field: 'floorName', width: 150, title: '楼层'},
+                {field: 'curRobotDesk2',  title: '二人假桌'},
+                {field: 'curRobotDesk3',  title: '三人假桌'},
+                {field: 'curRobotDesk4',  title: '四人假桌'}
+            ]],
+            response:{
+            		    statusCode: 200
+            },
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+        
+        
+        table.render({
+            elem: '#robet',
+            url: '/api/getRobets',
+            toolbar: '#toolbar',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            request: {
+                pageName: 'pageNum' //页码的参数名称，默认：page
+                ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+              },
+              
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'uid', width: 150, title: '机器人ID', sort: true},
+                {field: 'name', width: 150, title: '机器人名称'},
+            ]],
+            response:{
+            		    statusCode: 200
+            },
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+        
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where:data.field
+            }, 'data');
+
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+         var opertion=true;
+        table.on('toolbar(currentTableFilter)', function (obj) {
+        	
+            if (obj.event === 'add') {  // 监听添加操作
+            
+            }
+			else if (obj.event === 'edit') {  // 监听删除操作
+				var checkStatus = table.checkStatus('currentTableId');
+				if(checkStatus.data.length!=1){
+            		layer.alert(
+                       	"请选中一个桌子"
+                    );
+            		return;
+            	}
+            	var rowData=checkStatus.data[0];
+            	
+            	var index = layer.open({
+                    title: '编辑桌子',
+                    type: 1,
+                    shade: 0.2,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: $('#add') ,
+                    success: function(layero, index){
+                    	$("#add").removeClass("layui-hide");
+                    	
+                    	form.val("addPage",rowData
+               		    );
+                    
+                      }
+                    
+                });
+				
+            }else if(obj.event === 'addRobet'){
+            	
+            	var checkStatus = table.checkStatus('currentTableId');
+				if(checkStatus.data.length!=1){
+            		layer.alert(
+                       	"请选中一个桌子"
+                    );
+            		return;
+            	}
+            	var rowData=checkStatus.data[0];
+            	
+            	var index = layer.open({
+                    title: '添加机器人',
+                    type: 1,
+                    shade: 0.2,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: $('#robetPage') ,
+                    success: function(layero, index){
+                    	$("#robetPage").removeClass("layui-hide");
+                      }
+                });
+            }
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        //监听提交
+        form.on('submit(setting)', function (data) {
+        	
+        	
+        	layer.confirm('您正在执行设置桌子 玩法桌 机器人操作 ，确定要执行吗?', function(index){
+        		
+        	   var req=JSON.stringify(data.field);
+      			$.ajax({
+      			    type:"POST",
+      			    url:"/api/addClubGameDesk",
+      			    data:req,
+      			    contentType:'application/json;charset=UTF-8',
+      			    success:function(req){
+      					 layer.msg(JSON.parse(req).msg, {
+       					  icon: 1,
+       					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+       					})
+       					
+       				
+      			    },
+      			    error:function(jqXHR){
+      			        console.log("Error: "+jqXHR.status);
+      			    }
+      			});
+      			
+      			setTimeout(function(){ 
+					layer.closeAll();
+					 table.reload('currentTableId', {
+		                page: {
+		                    curr: 1
+		                }
+		                
+		            }, 'data');
+				}, 1000);
+
+      			
+        		});    
+ 
+            return false;
+        });
+        
+        
+        
+        
+        table.on('toolbar(robet)', function (obj) {
+        	
+
+        	var checkStatus = table.checkStatus('currentTableId');
+			if(checkStatus.data.length!=1){
+        		layer.alert(
+                   	"请选中一个桌子"
+                );
+        		return;
+        	}
+			
+			var rowData=checkStatus.data[0];
+
+			var checkStatus1 = table.checkStatus('robet');
+			if(checkStatus1.data.length!=1){
+        		layer.alert(
+                   	"请选中一个机器人"
+                );
+        		return;
+			}
+        	var rowData1=checkStatus1.data[0];
+
+        	
+        
+     	    
+     	    
+     	   var reqDate={};
+     	   reqDate.clubUid=rowData.clubUid;
+     	   reqDate.playerUid=rowData1.uid;
+     	  var req=JSON.stringify(reqDate);
+        	$.ajax({
+  			    type:"POST",
+  			    url:"/api/addClubMember",
+  			    data:req,
+  			    contentType:'application/json;charset=UTF-8',
+  			    success:function(req){
+  					 layer.msg(JSON.parse(req).msg, {
+   					  icon: 1,
+   					  time: 1000 //2秒关闭（如果不配置，默认是3秒）
+   					})
+
+   					setTimeout(function(){ 
+   						layer.closeAll();
+	   					 table.reload('currentTableId', {
+	  		                page: {
+	  		                    curr: 1
+	  		                }
+	  		                
+	  		            }, 'data');
+   					}, 1000);
+  					
+   					
+  			    },
+  			    error:function(jqXHR){
+  			        console.log("Error: "+jqXHR.status);
+  			    }
+  			});
+        	
+        });
+        
+ 
+        
+    });
+</script>
+
+<script type="text/html" id="titleTpl">
+  {{JSON.parse(d.money).DIAMOND}}
+</script>
+
+</body>
+</html>

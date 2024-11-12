@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.softeem.mappers.club.ClubMapper">
+
+    <!-- 查询用户权限信息 -->
+    <select id="ListClub" resultType="com.softeem.model.club.Club">
+		SELECT
+			c.uid AS clubUid,
+			c.`name` AS clubName,
+			c.ownerId AS playerUid,
+			f.uid AS floorUid,
+			f.`name` AS floorName 
+		FROM
+			clubinfo c,
+			floor f 
+		WHERE
+			c.uid = f.clubUid 
+			
+			
+			<if test="clubUid !=null and clubUid !=''">
+			  and   c.uid=#{clubUid}
+			
+			</if>
+			
+			<if test="playerUid !=null and playerUid !=''">
+			   and  c.ownerId=#{playerUid}
+			
+			</if>
+			
+		
+    </select>
+    
+   
+    
+
+    
+
+</mapper> 
